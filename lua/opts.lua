@@ -1,11 +1,37 @@
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 
+vim.g.autoformat = false
+
+vim.cmd([[
+      filetype plugin on
+      set noswapfile
+      " let g:lua_snippets_path=$XDG_CONFIG_HOME""/snippets/"
+      set conceallevel=2
+      let g:vim_markdown_conceal = 2
+      let g:vim_markdown_math = 1
+      let g:vim_markdown_frontmatter = 1
+]])
+
+-- the below is not working.
+-- vim.cmd [[let g:vimtex_syntax_custom_cmds = [
+--           \ {'name': 'R', 'mathmode': 0, 'concealchar': 'ℝ'},
+--           \]
+--           ]]
+
+
+
 -- Set highlight on search
 vim.o.hlsearch = true
 
+-- vim.o.concealcursor= "nc"
+
+vim.o.cursorline = true
+
 -- Make line numbers default
 vim.wo.number = true
+
+vim.wo.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'

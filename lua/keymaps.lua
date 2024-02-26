@@ -9,7 +9,21 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+vim.keymap.set('n', '<leader>em', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+vim.keymap.set('n', '<leader>ep', "<cmd>Explore<CR>", {desc = "[E]x[P]lore"})
 
 vim.keymap.set('n', '<leader>cf', '<cmd>Format<CR>', { desc = '[C]ode [F]ormat' })
+
+vim.keymap.set("n", "<leader>qs", [[<cmd>lua require("persistence").load()<cr>]], {})
+
+-- Window navigation
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Go to below window" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Go to above window" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+
+vim.keymap.set("n", "<leader>qq", [[<cmd>qa<cr>]])
+
+vim.keymap.set({'n', 'i'}, "<C-s>", "<cmd>w<cr>", { desc = "Save file" })
+vim.keymap.set('n', "<Esc>", "<Esc><cmd>noh<cr>")

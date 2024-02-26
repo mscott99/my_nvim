@@ -44,7 +44,39 @@ local function live_grep_git_root()
   local git_root = find_git_root()
   if git_root then
     require('telescope.builtin').live_grep {
+      cwd = { git_root },
+    }
+  end
+end
+
+local function hidden_files_git_root()
+  local git_root = find_git_root()
+  if git_root then
+    require('telescope.builtin').find_files {
       search_dirs = { git_root },
+      hidden = true,
+      no_ignore = true,
+    }
+  end
+end
+
+local function grep_hidden_files_git_root()
+  local git_root = find_git_root()
+  if git_root then
+    require('telescope.builtin').find_files {
+      search_dirs = { git_root },
+      hidden = true,
+      no_ignore = true,
+    }
+  end
+end
+
+local function oldfiles_in_git_dir()
+  local git_root = find_git_root()
+  if git_root then
+    require('telescope.builtin').oldfiles {
+      cwd = git_root ,
+      only_cwd = true,
     }
   end
 end
@@ -68,21 +100,25 @@ local function telescope_live_grep_open_files()
     prompt_title = 'Live Grep in Open Files',
   }
 end
+
+
+
 vim.keymap.set('n', '<leader>fp', function()
   require('telescope.builtin').find_files { cwd = require('lazy.core.config').options.root }
 end, { desc = 'Find Plugin File' })
-vim.keymap.set('<leader>ss', '<cmd>Telescope lsp_document_symbols<CR>', { desc = '[S]earch Document [S]ymbols' })
-vim.keymap.set('<leader>sS', '<cmd>Telescope lsp_workspace_symbols<CR>', { desc = '[S]earch Workspace [S]ymbols' })
-vim.keymap.set('<leader>sp', '<cmd>Telescope <CR>', { desc = '[S]earch [P]ickers' })
+vim.keymap.set('n', '<leader>ss', '<cmd>Telescope lsp_document_symbols<CR>', { desc = '[S]earch Document [S]ymbols' })
+vim.keymap.set('n', '<leader>sS', '<cmd>Telescope lsp_workspace_symbols<CR>', { desc = '[S]earch Workspace [S]ymbols' })
+vim.keymap.set('n', '<leader>sp', '<cmd>Telescope <CR>', { desc = '[S]earch [P]ickers' })
 
 local search_dirs = {
-      '~/.config/skhd/',
-      '~/.config/nvim/',
-      '~/.config/skhd/',
-      '~/.config/yabai/',
-      '~/.config/export_obsidian/',
-      '~/.config/alacritty/',
-    }
+  '~/.config/skhd/',
+  '~/.config/nvim/',
+  '~/.config/kickstarted_nvim/',
+  '~/.config/skhd/',
+  '~/.config/yabai/',
+  '~/.config/export_obsidian/',
+  '~/.config/alacritty/',
+}
 vim.keymap.set('n', '<leader>fc', function()
   require('telescope.builtin').find_files {
     search_dirs = search_dirs, -- still missing the files at the root of dotfiles folder
@@ -93,16 +129,21 @@ vim.keymap.set('n', '<leader>sc', function()
     search_dirs = search_dirs, -- still missing the files at the root of dotfiles folder
   }
 end, { desc = '[S]earch [C]onfig File' })
-
-vim.keymap.set('n', '<leader>sg', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root of Current File' })
-vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[F]ind [F]iles' })
--- also add pickers which include hidden files.
+vim.keymap.set('n', '<leader>fk', require('telescope.builtin').keymaps , { desc = '[T]elescope [K]eymaps'})
+vim.keymap.set('n', '<leader>sg', function() require('telescope.builtin').live_grep({cwd = find_git_root()}) end, { desc = '[S]earch by [G]rep on Git Root of Current File' })
+vim.keymap.set('n', '<leader>ff', function() require('telescope.builtin').find_files({cwd = find_git_root()}) end, { desc = '[F]ind [F]iles' })
+vim.keymap.set('n', '<leader>fh', hidden_files_git_root, { desc = '[F]ind [H]idden files' })
+vim.keymap.set('n', '<leader>sh', grep_hidden_files_git_root, { desc = '[S]earch [H]idden files' })
+vim.keymap.set('n', '<leader>fr', require("telescope.builtin").oldfiles, { desc = '[F]ind [R]ecent files' })
+vim.keymap.set('n', '<leader>fR', oldfiles_in_git_dir, { desc = '[F]ind [R]ecent files' })
+-- find buffers
+vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers, {desc = '[F]ind [B]uffers'})
+--TODO: also add pickers which include hidden files.
 
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
-vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+-- vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
+-- vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })

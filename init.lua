@@ -59,6 +59,8 @@ require('lazy').setup("plugins")
 -- [[ Setting options ]]
 require "opts"
 
+require "conceals"
+
 -- [[ Basic Keymaps ]]
 require "keymaps"
 
