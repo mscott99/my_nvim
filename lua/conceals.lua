@@ -11,6 +11,8 @@ local function setup_custom_conceals()
     syntax match texMathCmd '\\lesssim' conceal cchar=≲
     syntax match texMathCmd '\\gtrsim' conceal cchar=≳
     syntax match texMathCmd '\\colonequals' conceal cchar=≔
+
+    syntax match texMathCmd '\\boldsymbol{e}' conceal cchar=𝐞
     ]]
     -- Additional syntax matches can be added here
 end

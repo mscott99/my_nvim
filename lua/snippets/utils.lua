@@ -66,6 +66,24 @@ function M.concat(tables)
   return v
 end
 
+function M.tableConcat(t1,t2)
+    for j=1,#t2 do
+        t1[#t1+1] = t2[j]
+    end
+    return t1
+end
+
+function M.doubleMap(first, second, fn)
+  local result = {}
+  for _, f in ipairs(first) do
+    for _, s in ipairs(second) do
+      result[#result + 1] = fn(f, s)
+      fn(f, s)
+    end
+  end
+  return result
+end
+
 local function check_in_mathzone()
   local buf = vim.api.nvim_get_current_buf()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -100,6 +118,60 @@ end
 --   end,
 -- })
 --
+
+M.greek_letters = {
+  "nabla",
+  "Nabla",
+  "alpha",
+  "Alpha",
+  "beta",
+  "Beta",
+  "chi",
+  "Chi",
+  "delta",
+  "Delta",
+  "psi",
+  "Psi",
+  "xi",
+  "Xi",
+  "Epsilon",
+  "gamma",
+  "Gamma",
+  "iota",
+  "Iota",
+  "kappa",
+  "Kappa",
+  "lambda",
+  "Lambda",
+  "mu",
+  "Mu",
+  "nu",
+  "Nu",
+  "omega",
+  "Omega",
+  "phi",
+  "Phi",
+  "pi",
+  "Pi",
+  "rho",
+  "Rho",
+  "sigma",
+  "Sigma",
+  "tau",
+  "Tau",
+  "theta",
+  "Theta",
+  "zeta",
+  "Zeta",
+  "Eta",
+}
+
+local others = {
+  "varepsilon",
+}
+
+M.redundant_starting_greeks = M.concat({M.greek_letters, others})
+
 function M.in_markdown_mathzone()
   return check_in_mathzone()
   -- return vim.b.in_mathzone

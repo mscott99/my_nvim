@@ -26,4 +26,24 @@ vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 vim.keymap.set("n", "<leader>qq", [[<cmd>qa<cr>]])
 
 vim.keymap.set({'n', 'i'}, "<C-s>", "<cmd>w<cr>", { desc = "Save file" })
-vim.keymap.set('n', "<Esc>", "<Esc><cmd>noh<cr>")
+vim.keymap.set('n', "<Esc>", "<cmd>noh<cr><Esc>")
+
+-- funky keymaps
+
+vim.keymap.set("n", "<leader>fd", "<cmd>call delete(expand('%')) | bdelete!<CR>", {desc = "[F]ile [D]elete"})
+
+vim.api.nvim_create_user_command('FileDelete', function()
+   vim.cmd("call delete(expand('%')) | bdelete!")
+end, {})
+
+-- Some primagen shortcuts
+vim.keymap.set({ "n", "x", "v" }, "<Cmd-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Go to another tmux place." })
+
+vim.keymap.set({ "v" }, "J", "mzJ`z")
+vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv")
+
+vim.keymap.set({ "x", "n" }, "H", "^") -- Make H for alternate file
+
+vim.keymap.set("n", "<leader>cn", [[<cmd>let @+ = expand("%")<CR>]], { desc = "[C]opy file [N]ame"})
+vim.keymap.set("n", "<leader>cp", [[<cmd>let @+ = expand("%:p")<CR>]], { desc = "[C]opy [P]ath"})

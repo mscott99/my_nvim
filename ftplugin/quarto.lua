@@ -9,4 +9,4 @@ vim.wo.breakindent = true
 vim.wo.showbreak = "|"
 --
 -- -- don't run vim ftplugin on top
-vim.api.nvim_buf_set_var(0, "did_ftplugin", true)
+-- vim.api.nvim_buf_set_var(0, "did_ftplugin", true)

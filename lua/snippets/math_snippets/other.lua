@@ -9,12 +9,16 @@ local d = ls.dynamic_node
 local fmt = require("luasnip.extras.fmt").fmt
 local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").rep
---
+local greek_letters = require("snippets.utils").greek_letters
+local concat = require("snippets.utils").concat
+local map = require("snippets.utils").map
+local doubleMap = require("snippets.utils").doubleMap
+local all_greeks = require("snippets.utils").redundant_starting_greeks
 
 return function(is_math, not_math)
-  return {
-    s({trig = "ce", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
-    s({trig = ":=", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
+    local manual = {
+    -- s({trig = "ce", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
+    -- s({trig = ":=", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
     s({ trig = "Bo", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("B_\\infty") }),
     s({ trig = "Rn", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^n") }),
     s({ trig = "Rk", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^k") }),
@@ -31,25 +35,26 @@ return function(is_math, not_math)
       { t("\\Delta^{${1:n}-1}$0") }
     ),
     s({ trig = "rng", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\range") }),
-    s({ trig = "inn", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\in") }),
-    s({ trig = "wt", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\subseteq") }),
-    s({ trig = "apx", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\approx") }),
-    s({ trig = "imp", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\implies") }),
-    s({ trig = "suf", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\impliedby") }),
-    s({ trig = "ct", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\supseteq") }),
+    s({ trig = "inn", condition = is_math, wordTrig=false, snippetType = "autosnippet" }, { t("\\in ") }),
+    s({ trig = "wt", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\subseteq ") }),
+    s({ trig = "apx", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\approx ") }),
+    s({ trig = "imp", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\implies ") }),
+    s({ trig = "suf", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\impliedby ") }),
+    s({ trig = "ct", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\supseteq ") }),
     s(
       { trig = "normal", condition = is_math, wordTrig = true, snippetType = "autosnippet" },
       { t("\\mathcal{N}(0, I)") }
     ),
     s({ trig = "EE", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{E}") }),
     s({ trig = "RR", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}") }),
-    s({ trig = "any", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\forall") }),
-    s({ trig = "leq", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\le") }),
-    s({ trig = "geq", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\ge") }),
-    s({ trig = "les", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\lesssim") }),
-    s({ trig = "ges", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\gtrsim") }),
+    s({ trig = "any", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\forall") }),
+    s({ trig = "leq", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\le") }),
+    s({ trig = "geq", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\ge") }),
+    s({ trig = "les", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\lesssim") }),
+    s({ trig = "ges", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\gtrsim") }),
     s({ trig = [[__]], wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("_{<>}", { i(1) })),
     s({ trig = "^^", wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),
+    s({ trig = "rs", wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),
     s(
       { trig = "ldot", wordTrig = false, prority = 1000, condition = is_math, snippetType = "autosnippet" },
       { t("\\ldots") }
@@ -59,7 +64,7 @@ return function(is_math, not_math)
     s({ trig = "sq", priority = 900, condition = is_math, snippetType = "autosnippet" }, fmta("\\sqrt{<>}", { i(1) })),
     s(
       {
-        trig = [[([^ %[({\<'%$])sq]],
+        trig = [[([^ %[({\<'%$])sr]],
         regTrig = true,
         wordTrig = false,
         condition = is_math,
@@ -69,7 +74,18 @@ return function(is_math, not_math)
         return snip.captures[1] .. "^2"
       end) }
     ),
-
+    s(
+      { trig = "([^ ])invs", regTrig = true, wordTrig = false, condition = is_math, snippetType = "autosnippet" },
+      { f(function(_, snip)
+        return snip.captures[1] .. "^{-1}"
+      end) }
+    ), -- make another one for letters where it is a wordTrig.
+    s(
+      { trig = "([^ ])sr", regTrig = true, wordTrig = false, condition = is_math, snippetType = "autosnippet" },
+      { f(function(_, snip)
+        return snip.captures[1] .. "^2"
+      end) }
+    ), -- make another one for letters where it is a wordTrig.
     s(
       { trig = "([^ ])cub", regTrig = true, wordTrig = false, condition = is_math, snippetType = "autosnippet" },
       { f(function(_, snip)
@@ -115,4 +131,25 @@ return function(is_math, not_math)
       fmta([[\mathbb{S}^{<>-1}]], { i(1, "n") })
     ),
   }
+
+  -- return manual
+
+  local posts = {
+    {trig = "sr", val = "^2"},
+    {trig = "cub", val = "^3"},
+    {trig = "invs", val = "^{-1}"},
+  }
+
+  local function greek_post(letter, post)
+      return s({ trig = "\\" .. letter .. " " .. post.trig,
+        regTrig = true, condition = is_math, snippetType = "autosnippet" }, { t("\\" .. letter .. post.val) })
+  end
+
+  local post_snips = doubleMap(greek_letters, posts, greek_post)
+
+  local raise_trigs = map(greek_letters, function(letter)
+    return s({ trig = "\\" .. letter .. " " .. "rs", priority = 1001, regTrig = true, condition = is_math, snippetType = "autosnippet" }, { t("\\" .. letter .. "^{"), i(1), t("}") })
+  end)
+
+  return concat({manual, post_snips, raise_trigs})
 end

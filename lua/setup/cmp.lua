@@ -22,6 +22,11 @@ cmp.setup {
   },
   dependencies = {
     { "ray-x/cmp-treesitter" },
+    {"benfowler/telescope-luasnip.nvim",
+      config = function()
+        require('telescope').load_extension('luasnip')
+      end
+    }
   },
   completion = {
     completeopt = 'menu,menuone,noinsert',

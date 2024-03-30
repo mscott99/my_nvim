@@ -28,7 +28,7 @@ local on_attach = function(_, bufnr)
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
 
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
-  vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help,{desc = 'Signature Documentation'})
+  vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
 
 
@@ -46,29 +46,30 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
-      local on_attach_qmd = function(client, bufnr)
-        local function buf_set_keymap(...)
-          vim.api.nvim_buf_set_keymap(bufnr, ...)
-        end
-        local function buf_set_option(...)
-          vim.api.nvim_buf_set_option(bufnr, ...)
-        end
+-- local on_attach_qmd = function(client, bufnr)
+--   local function buf_set_keymap(...)
+--     vim.api.nvim_buf_set_keymap(bufnr, ...)
+--   end
+--   local function buf_set_option(...)
+--     vim.api.nvim_buf_set_option(bufnr, ...)
+--   end
+--
+--   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
+--   local opts = { noremap = true, silent = true }
+--
+--   buf_set_keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+--   buf_set_keymap("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
+--   buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+--   buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+--   buf_set_keymap("n", "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", opts)
+--   client.server_capabilities.document_formatting = true
+-- end
+--
+-- local lsp_flags = {
+--   allow_incremental_sync = true,
+--   debounce_text_changes = 150,
+-- }
 
-        buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
-        local opts = { noremap = true, silent = true }
-
-        buf_set_keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-        buf_set_keymap("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
-        buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-        buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-        buf_set_keymap("n", "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", opts)
-        client.server_capabilities.document_formatting = true
-      end
-
-      local lsp_flags = {
-        allow_incremental_sync = true,
-        debounce_text_changes = 150,
-      }
 -- document existing key chains
 require('which-key').register {
   ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
@@ -101,6 +102,11 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local util = require("lspconfig.util")
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- local lsp_flags = {
+--   allow_incremental_sync = true,
+--   debounce_text_changes = 150,
+-- }
 local servers = {
   -- clangd = {},
   -- gopls = {},
@@ -109,20 +115,33 @@ local servers = {
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
-  marksman= {
-        on_attach = on_attach_qmd,
-        capabilities = capabilities,
-        filetypes = { "quarto" },
-        root_dir = util.root_pattern(".git", ".marksman.toml", "_quarto.yml"),
+  -- noisy errors about ambiguous links
+  -- marksman = {},
+
+  pyright = {
+    -- settings = {
+      python = {
+        stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+        analysis = {
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = false,
+          diagnosticMode = "openFilesOnly",
+        },
+      },
+    -- },
+    -- root_dir = function(fname)
+    --   return util.root_pattern(".obsidian", ".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(
+    --     fname
+    --   ) or util.path.dirname(fname)
+    -- end,
   },
-  julials={},
+  julials = {},
 }
 
 -- Setup neovim lua configuration
 require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Ensure the servers above are installed
@@ -143,55 +162,55 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
-      -- local function strsplit(s, delimiter)
-      --   local result = {}
-      --   for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
-      --     table.insert(result, match)
-      --   end
-      --   return result
-      -- end
-      --
-      -- local function get_quarto_resource_path()
-      --   local f = assert(io.popen("quarto --paths", "r"))
-      --   local s = assert(f:read("*a"))
-      --   f:close()
-      --   return strsplit(s, "\n")[2]
-      -- end
-      --
-      -- local lua_library_files = vim.api.nvim_get_runtime_file("", true)
-      -- local lua_plugin_paths = {}
-      -- local resource_path = get_quarto_resource_path()
-      -- if resource_path == nil then
-      --   vim.notify_once("quarto not found, lua library files not loaded")
-      -- else
-      --   table.insert(lua_library_files, resource_path .. "/lua-types")
-      --   table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
-      -- end
-      --
-      -- require('lspconfig').lua_ls.setup({
-      --   on_attach = on_attach,
-      --   capabilities = capabilities,
-      --   flags = lsp_flags,
-      --   settings = {
-      --     Lua = {
-      --       completion = {
-      --         callSnippet = "Replace",
-      --       },
-      --       runtime = {
-      --         version = "LuaJIT",
-      --         plugin = lua_plugin_paths,
-      --       },
-      --       diagnostics = {
-      --         globals = { "vim", "quarto", "pandoc", "io", "string", "print", "require", "table" },
-      --         disable = { "trailing-space" },
-      --       },
-      --       workspace = {
-      --         library = lua_library_files,
-      --         checkThirdParty = false,
-      --       },
-      --       telemetry = {
-      --         enable = false,
-      --       },
-      --     },
-      --   },
-      -- })
+-- local function strsplit(s, delimiter)
+--   local result = {}
+--   for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
+--     table.insert(result, match)
+--   end
+--   return result
+-- end
+--
+-- local function get_quarto_resource_path()
+--   local f = assert(io.popen("quarto --paths", "r"))
+--   local s = assert(f:read("*a"))
+--   f:close()
+--   return strsplit(s, "\n")[2]
+-- end
+--
+-- local lua_library_files = vim.api.nvim_get_runtime_file("", true)
+-- local lua_plugin_paths = {}
+-- local resource_path = get_quarto_resource_path()
+-- if resource_path == nil then
+--   vim.notify_once("quarto not found, lua library files not loaded")
+-- else
+--   table.insert(lua_library_files, resource_path .. "/lua-types")
+--   table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
+-- end
+--
+-- require('lspconfig').lua_ls.setup({
+--   on_attach = on_attach,
+--   capabilities = capabilities,
+--   flags = lsp_flags,
+--   settings = {
+--     Lua = {
+--       completion = {
+--         callSnippet = "Replace",
+--       },
+--       runtime = {
+--         version = "LuaJIT",
+--         plugin = lua_plugin_paths,
+--       },
+--       diagnostics = {
+--         globals = { "vim", "quarto", "pandoc", "io", "string", "print", "require", "table" },
+--         disable = { "trailing-space" },
+--       },
+--       workspace = {
+--         library = lua_library_files,
+--         checkThirdParty = false,
+--       },
+--       telemetry = {
+--         enable = false,
+--       },
+--     },
+--   },
+-- })

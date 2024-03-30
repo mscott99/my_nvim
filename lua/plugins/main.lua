@@ -14,6 +14,14 @@ return {
     opts = {} -- this is equalent to setup({}) function
   },
   {
+    "benfowler/telescope-luasnip.nvim",
+    event = "InsertEnter",
+    module = "telescope._extensions.luasnip",
+    config = function()
+      require('telescope').load_extension('luasnip')
+    end
+  },
+  {
     'mbbill/undotree',
     cmd = 'UndotreeToggle',
     keys = {
@@ -345,7 +353,17 @@ return {
       },
     },
   },
-
+  {
+    "benfowler/telescope-luasnip.nvim",
+    dependencies = {
+      'L3MON4D3/LuaSnip',
+      'nvim-telescope/telescope.nvim',
+    },
+    cmd = "Telescope luasnip",
+    config = function()
+      require('telescope').load_extension('luasnip')
+    end
+  },
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',

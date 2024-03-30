@@ -1,7 +1,7 @@
 return {
   {
     'f3fora/nvim-texlabconfig',
-    requires = { 'neovim/nvim-lspconfig' },
+    dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
       local lspconfig = require 'lspconfig'
       -- need to remove the -g to get the viewer to show up. Otherwise open manually

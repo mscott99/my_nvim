@@ -16,7 +16,7 @@ return function(is_math, not_math)
     s({ condition = not_math, trig = "mk", name = "Math", snippetType = "autosnippet" }, fmta([[$<>$]], { i(1, " ") })),
     s(
       { condition = not_math, trig = "dm", name = "Math", snippetType = "autosnippet" },
-      fmta("$$\n\t<>\n$$\n\n", { i(1) })
+      fmta("$$\t<>$$\n", { i(1) })
     ),
     s(
       {

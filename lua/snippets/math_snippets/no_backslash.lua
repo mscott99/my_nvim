@@ -11,7 +11,6 @@ local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").rep
 
 local no_backslash = {
-  "times",
   "cos",
   "sin",
   "arcsin",
@@ -26,8 +25,6 @@ local no_backslash = {
   "cotan",
   "conv",
   "log",
-  "quad",
-  "qquad",
   "min",
   "max",
   "argmin",
@@ -35,41 +32,55 @@ local no_backslash = {
   "proj",
   "dist",
   "odot",
-  "cdot",
-  "to",
-  "ll",
   "ln",
   "star",
-  "perp",
   "field",
   "exp",
   "cot",
   "exists",
   "not",
-  "iff",
-  "implies",
-  "neq",
-  "sim",
   "inf",
   "sup",
   "limsup",
   "liminf",
-  "circ",
-  "cap",
-  "cup",
   "Cap",
   "Cup",
 }
 
+local no_backslash_add_space = {
+  "to",
+  "circ",
+  "cap",
+  "cup",
+  "ll",
+  "implies",
+  "times",
+  "quad",
+  "qquad",
+  "neq",
+  "sim",
+  "iff",
+  "cdot",
+  "perp",
+}
+
 local map = require("snippets.utils").map
+local concat = require("snippets.utils").concat
 
 return function(is_math, not_math)
   local function prefix_backslash(name)
     return s(
-      { condition = is_math, trig = name, name = "fraction", dscr = "fraction (general)", snippetType = "autosnippet" },
+      { trig= name, wordTrig=false, condition = is_math, snippetType = "autosnippet" },
       { t("\\" .. name) }
     )
   end
 
-  return map(no_backslash, prefix_backslash)
+  local function prefix_backslash_and_space(name)
+    return s(
+      { trig=name, wordTrig=false, condition = is_math, snippetType = "autosnippet" },
+      { t("\\" .. name .. " ") }
+    )
+  end
+
+  return concat({map(no_backslash_add_space, prefix_backslash_and_space), map(no_backslash, prefix_backslash)})
 end
