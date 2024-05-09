@@ -21,7 +21,7 @@ return function(is_math, not_math)
     s(
       {
         condition = is_math,
-        trig = "ff",
+        trig = "//",
         wordtrig = true,
         name = "fraction",
         dscr = "fraction (general)",
@@ -31,7 +31,7 @@ return function(is_math, not_math)
     ),
     s(
       {
-        trig = "(%b())ff",
+        trig = "(%b())/",
         name = "fraction",
         dscr = "auto fraction 2",
         priority = 1100,
@@ -55,7 +55,7 @@ return function(is_math, not_math)
     ),
     s(
       {
-        trig = "([^%$%(%)%[%]{} |]+)ff",
+        trig = "([^%$%(%)%[%]{} |]+)/",
         name = "fraction",
         dscr = "auto fraction 1",
         condition = is_math,

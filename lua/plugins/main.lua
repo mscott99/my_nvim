@@ -51,6 +51,16 @@ return {
     },
   },
   {
+    'stevearc/oil.nvim',
+    -- Optional dependencies
+    cmd = {'Oil'},
+    opts = {
+      default_file_explorer = true,
+    },
+    lazy = false,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
     'ThePrimeagen/harpoon',
     dependencies = 'nvim-lua/plenary.nvim',
     event = 'VeryLazy',

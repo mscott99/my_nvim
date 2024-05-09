@@ -63,16 +63,16 @@ cmp.setup {
     end, { 'i', 's' }),
   },
   sources = {
-    -- { name = 'copilot' }, -- not using cmp-comp
+    { name = 'copilot' }, -- not using cmp-comp
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
     { name = "otter" },       -- for code chunks in quarto
     { name = "treesitter", keyword_length = 5, max_item_count = 3 },
   },
-  experimental = {
-    ghost_text = {
-      hl_group = 'CmpGhostText',
-    },
-  },
+  -- experimental = {
+    -- ghost_text = {
+    --   hl_group = 'CmpGhostText',
+    -- },
+  -- },
 }

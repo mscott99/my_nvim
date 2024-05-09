@@ -2,6 +2,14 @@
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
+vim.keymap.set('n', '<leader>tt', '<cmd>Toc<cr>', {desc= "[T]able [O]f [C]ontents"})
+
+--Search and replace from selection
+vim.keymap.set('v', "<C-r>", [["hy:s/\(<C-R>=escape(@h, "/\\:")<cr>\)//g<left><left>]])
+
+-- deal with sentences, even with surround plugins
+vim.keymap.set('o', "gas", "as", {desc="[A]round [S]entence"})
+vim.keymap.set('o', "gis", "is", {desc="[A]round [S]entence"})
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -11,7 +19,7 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>em', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-vim.keymap.set('n', '<leader>ep', "<cmd>Explore<CR>", {desc = "[E]x[P]lore"})
+vim.keymap.set('n', '<leader>ep', "<cmd>Oil<CR>", {desc = "[E]x[P]lore"})
 
 vim.keymap.set('n', '<leader>cf', '<cmd>Format<CR>', { desc = '[C]ode [F]ormat' })
 

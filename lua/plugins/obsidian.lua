@@ -28,15 +28,16 @@ return {
     enabled = true,
     ft = "markdown",
     keys = {
-      { "[h", "<Plug>Markdown_MoveToPreviousHeader<CR>", desc = "Previous [H]eader"},
-      { "]h", "<Plug>Markdown_MoveToNextHeader<CR>", desc = "Next [H]eader"},
-      { "<leader>hi", "<cmd>'<,'>HeaderDecrease<cr>", mode = "v" , desc = "[H]eader [I]ncrease"},
-      { "<leader>hd", "<cmd>'<,'>HeaderIncrease<cr>", mode = "v" , desc = "[H]eader [D]ecrease"},
+      { "[[", "<Plug>Markdown_MoveToPreviousHeader<CR>", desc = "Previous [H]eader"},
+      { "]]", "<Plug>Markdown_MoveToNextHeader<CR>", desc = "Next [H]eader"},
+      { "<leader>ih", "<cmd>'<,'>HeaderDecrease<cr>", mode = "v" , desc = "[I]ncrease [H]eader"},
+      { "<leader>lh", "<cmd>'<,'>HeaderIncrease<cr>", mode = "v" , desc = "[L]ower [H]eader"},
     },
     -- event="BufEnter *.md"
   },
   {
     "epwalsh/obsidian.nvim",
+    enabled = true,
     lazy = true,
     event = "BufRead " .. vim.fn.expand("~") .. "/Obsidian/**.md",
     cmd = { "ObsidianOpen", "ObsidianQuickSwitch", "ObsidianSearch" },

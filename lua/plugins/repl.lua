@@ -1,45 +1,69 @@
-local start_repl = function()
-  -- start based on filetype
-  local filetype = vim.bo.filetype
-  if filetype == "python" then
-    vim.cmd([[TermExec cmd='source ./venv/bin/activate; python -m IPython --no-autoindent --matplotlib']])
-  elseif filetype == "julia" then
-    vim.cmd([[TermExec cmd='julia --project']])
-  else
-    vim.cmd([[TermExec cmd='echo "No REPL for this filetype"']])
-  end
-end
+-- local start_repl = function()
+--   -- start based on filetype
+--   local filetype = vim.bo.filetype
+--   if filetype == "python" then
+--     vim.cmd([[TermExec cmd='source ./venv/bin/activate; python -m IPython --no-autoindent --matplotlib']])
+--   elseif filetype == "julia" then
+--     vim.cmd([[TermExec cmd='julia --project']])
+--   else
+--     vim.cmd([[TermExec cmd='echo "No REPL for this filetype"']])
+--   end
+-- end
+--
+-- local trim_spaces = false
+-- vim.keymap.set({ "n", "v" }, "<leader>R", start_repl, { desc = "start repl" })
+-- vim.keymap.set("n", "<leader>r", function()
+--   require("toggleterm").send_lines_to_terminal("single_line", trim_spaces, { args = vim.v.count })
+--   vim.cmd("normal! j")
+-- end)
+-- vim.keymap.set({ "n", "i" }, "®", function()
+--   require("toggleterm").send_lines_to_terminal("single_line", trim_spaces, { args = vim.v.count })
+--   vim.cmd("normal! j")
+-- end)
 
-local trim_spaces = false
-vim.keymap.set({ "n", "v" }, "<leader>R", start_repl, { desc = "start repl" })
-vim.keymap.set("n", "<leader>r", function()
-  require("toggleterm").send_lines_to_terminal("single_line", trim_spaces, { args = vim.v.count })
-  vim.cmd("normal! j")
-end)
-vim.keymap.set({ "n", "i" }, "®", function()
-  require("toggleterm").send_lines_to_terminal("single_line", trim_spaces, { args = vim.v.count })
-  vim.cmd("normal! j")
-end)
-
-vim.keymap.set("v", "<leader>r", function()
-  local tog = require("toggleterm")
-  if vim.api.nvim_get_mode().mode == "v" then
-    tog.send_lines_to_terminal("visual_selection", trim_spaces, { args = vim.v.count })
-  elseif vim.api.nvim_get_mode().mode == "V" then
-    tog.send_lines_to_terminal("visual_lines", trim_spaces, { args = vim.v.count })
-  end
-  vim.cmd("normal! `>") -- move to end of visual selection
-end)
+-- vim.keymap.set("v", "<leader>r", function()
+--   local tog = require("toggleterm")
+--   if vim.api.nvim_get_mode().mode == "v" then
+--     tog.send_lines_to_terminal("visual_selection", trim_spaces, { args = vim.v.count })
+--   elseif vim.api.nvim_get_mode().mode == "V" then
+--     tog.send_lines_to_terminal("visual_lines", trim_spaces, { args = vim.v.count })
+--   end
+--   vim.cmd("normal! `>") -- move to end of visual selection
+-- end)
 
 return {
   {
     "akinsho/toggleterm.nvim",
-    enabled = true,
+    enabled = false,
     version = "*",
     config = true,
   },
-  -- {
-  --   "jpalardy/vim-slime",
+  {
+    "jpalardy/vim-slime",
+    config= function()
+      vim.cmd[[
+      let g:slime_config_defaults["python_ipython"] = 0
+      let g:slime_config_defaults["dispatch_ipython_pause"] = 100
+      let g:slime_target = "tmux"
+
+      function! _EscapeText_python(text)
+      if slime#config#resolve("python_ipython") && len(split(a:text,"\n")) > 1
+      return ["%cpaste -q\n", slime#config#resolve("dispatch_ipython_pause"), a:text, "--\n"]
+      else
+      let empty_lines_pat = '\(^\|\n\)\zs\(\s*\n\+\)\+'
+      let no_empty_lines = substitute(a:text, empty_lines_pat, "", "g")
+      let dedent_pat = '\(^\|\n\)\zs'.matchstr(no_empty_lines, '^\s*')
+      let dedented_lines = substitute(no_empty_lines, dedent_pat, "", "g")
+      let except_pat = '\(elif\|else\|except\|finally\)\@!'
+      let add_eol_pat = '\n\s[^\n]\+\n\zs\ze\('.except_pat.'\S\|$\)'
+      return substitute(dedented_lines, add_eol_pat, "\n", "g")
+      end
+      endfunction
+
+      ]]
+    end,
+    ft = {"python", "julia", "quarto"},
+  },
   --   enabled = false,
   --   init = function()
   --     vim.b["quarto_is_" .. "python" .. "_chunk"] = false

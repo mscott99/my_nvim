@@ -11,8 +11,12 @@ vim.cmd([[
       let g:vim_markdown_conceal = 2
       let g:vim_markdown_math = 1
       let g:vim_markdown_frontmatter = 1
-]])
+      au BufRead,BufNewFile *.typ                set filetype=typst]])
 
+
+-- gets confused with sql. Even this does not seem to work, so I
+-- added an autocommand above instead.
+-- vim.g.filetype_typ = "typst"
 -- the below is not working.
 -- vim.cmd [[let g:vimtex_syntax_custom_cmds = [
 --           \ {'name': 'R', 'mathmode': 0, 'concealchar': 'ℝ'},

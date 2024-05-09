@@ -2,11 +2,37 @@ local my_settings = {
   export_folder = "/Users/matthewscott/Documents/auto_exports/",
   template_path = "/Users/matthewscott/.config/export_obsidian/template.tex",
   supporting_docs_dir = "/Users/matthewscott/.config/export_obsidian/supporting_docs/",
-  julia_main_file_path = "/Users/matthewscott/Prog/Obsidian-Paper-Export/src/main.jl",
+  julia_main_file_path = "/Users/matthewscott/Prog/Paper_export_projects/Obsidian-Paper-Export/src/main.jl",
 }
+local Path = require('plenary.path')
+
+local function findParentWithFolder(startPath, pattern)
+    local currentPath = Path:new(startPath)
+
+    -- Keep iterating until we reach the root directory
+    while true do
+        currentPath = currentPath:parent()
+
+        -- Construct the path for the target folder
+        local targetFolder = currentPath / pattern
+
+        -- Check if the target folder exists
+        if targetFolder:exists() then
+            return tostring(currentPath)
+        end
+
+        -- If we've reached the filesystem root, stop searching
+        if tostring(currentPath) == '/' then
+            break
+        end
+    end
+
+    return nil -- Return nil if not found
+end
 
 function Export_Longform()
-  local dir, file_name = string.match(vim.api.nvim_buf_get_name(0), "(.-)([^/]+)%.md$")
+  local file_name = string.match(vim.api.nvim_buf_get_name(0), ".-([^/]+)%.md$")
+  local dir = findParentWithFolder(vim.api.nvim_buf_get_name(0), ".obsidian")
   assert(dir ~= nil and file_name ~= nil, "could not resolve file name.")
   local under_file_name = string.gsub(file_name, " ", "_")
 
@@ -49,7 +75,7 @@ output_folder_path: "%soutput/"]],
     export_executable:write(string.format(
       [[julia %s %sconfig.yaml
 
-if \[\[ $? -eq 1 \]\]; then
+if %[%[ $? -eq 1 %]%]; then
     exit 0
 fi
   ]],

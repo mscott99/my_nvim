@@ -5,6 +5,7 @@ vim.defer_fn(function()
     -- Add languages to be installed here that you want installed for treesitter
     ensure_installed = {
       'julia',
+      -- 'mojo', not yet available
       'markdown',
       'markdown_inline',
       'latex',
@@ -20,7 +21,7 @@ vim.defer_fn(function()
       'vim',
       'bash',
       'dot',
-      'norg'
+      'norg',
     },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
@@ -33,7 +34,7 @@ vim.defer_fn(function()
     modules = {},
     highlight = {
       enable = true,
-      additional_vim_regex_highlighting = false,
+      additional_vim_regex_highlighting = true,
 
       -- keep disabled except when using quarto.
       disable = { 'markdown', 'markdown_inline', 'latex' }, -- let nvim-markdown do that.
@@ -66,20 +67,16 @@ vim.defer_fn(function()
         enable = true,
         set_jumps = true, -- whether to set jumps in the jumplist
         goto_next_start = {
-          [']m'] = '@function.outer',
-          [']]'] = '@class.outer',
+          [']f'] = '@function.outer',
         },
         goto_next_end = {
-          [']M'] = '@function.outer',
-          [']['] = '@class.outer',
+          [']F'] = '@function.outer',
         },
         goto_previous_start = {
-          ['[m'] = '@function.outer',
-          ['[['] = '@class.outer',
+          ['[F'] ='@function.outer',
         },
         goto_previous_end = {
-          ['[M'] = '@function.outer',
-          ['[]'] = '@class.outer',
+          ['[f'] = '@function.outer',
         },
       },
       -- swap = {

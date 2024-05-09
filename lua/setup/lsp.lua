@@ -21,7 +21,7 @@ local on_attach = function(_, bufnr)
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+  nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Document [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
   -- See `:help K` for why this keymap
@@ -75,7 +75,7 @@ require('which-key').register {
   ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
   ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
   ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
+  -- ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' }, is already a shortcut.
   ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
   ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
   ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
@@ -117,17 +117,16 @@ local servers = {
 
   -- noisy errors about ambiguous links
   -- marksman = {},
-
   pyright = {
     -- settings = {
-      python = {
-        stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
-        analysis = {
-          autoSearchPaths = true,
-          useLibraryCodeForTypes = false,
-          diagnosticMode = "openFilesOnly",
-        },
-      },
+      -- python = {
+      --   stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+      --   analysis = {
+      --     autoSearchPaths = true,
+      --     useLibraryCodeForTypes = false,
+      --     diagnosticMode = "openFilesOnly",
+      --   },
+      -- },
     -- },
     -- root_dir = function(fname)
     --   return util.root_pattern(".obsidian", ".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(
@@ -136,6 +135,12 @@ local servers = {
     -- end,
   },
   julials = {},
+  typst_lsp = {
+    settings = {
+      exportPdf = "never",
+    },
+  },
+  tsserver = {}
 }
 
 -- Setup neovim lua configuration
@@ -161,6 +166,8 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
+require'lspconfig'.mojo.setup{}
 
 -- local function strsplit(s, delimiter)
 --   local result = {}

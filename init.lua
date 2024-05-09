@@ -82,3 +82,7 @@ require "setup.treesitter"
 require "setup.lsp"
 
 require "setup.cmp"
+
+require "setup.export_obsidian"
+
+require "setup.utils"
