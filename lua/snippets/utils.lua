@@ -120,14 +120,10 @@ end
 --
 
 M.greek_letters = {
-  "nabla",
-  "Nabla",
   "alpha",
   "Alpha",
   "beta",
   "Beta",
-  "chi",
-  "Chi",
   "delta",
   "Delta",
   "psi",
@@ -157,13 +153,17 @@ M.greek_letters = {
   "Rho",
   "sigma",
   "Sigma",
-  "tau",
-  "Tau",
   "theta",
   "Theta",
+  "tau",
+  "Tau",
   "zeta",
   "Zeta",
   "Eta",
+  "nabla",
+  "Nabla",
+  "chi",
+  "Chi",
 }
 
 local others = {

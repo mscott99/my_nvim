@@ -11,7 +11,8 @@ vim.cmd([[
       let g:vim_markdown_conceal = 2
       let g:vim_markdown_math = 1
       let g:vim_markdown_frontmatter = 1
-      au BufRead,BufNewFile *.typ                set filetype=typst]])
+      au BufRead,BufNewFile *.typ                set filetype=typst
+      ]])
 
 
 -- gets confused with sql. Even this does not seem to work, so I

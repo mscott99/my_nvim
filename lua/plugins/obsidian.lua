@@ -39,7 +39,7 @@ return {
     "epwalsh/obsidian.nvim",
     enabled = true,
     lazy = true,
-    event = "BufRead " .. vim.fn.expand("~") .. "/Obsidian/**.md",
+    event = "BufReadPre " .. vim.fn.expand("~") .. "/Obsidian/**.md",
     cmd = { "ObsidianOpen", "ObsidianQuickSwitch", "ObsidianSearch" },
     -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand':
     -- event = { "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md" },

@@ -11,6 +11,7 @@ local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").rep
 
 local no_backslash = {
+  "ker",
   "cos",
   "sin",
   "arcsin",
@@ -24,7 +25,6 @@ local no_backslash = {
   "acos",
   "cotan",
   "conv",
-  "log",
   "min",
   "max",
   "argmin",
@@ -41,6 +41,7 @@ local no_backslash = {
   "not",
   "inf",
   "sup",
+  "perp",
   "limsup",
   "liminf",
   "Cap",
@@ -49,9 +50,11 @@ local no_backslash = {
 
 local no_backslash_add_space = {
   "to",
+  "log",
   "circ",
   "cap",
   "cup",
+  "ell",
   "ll",
   "implies",
   "times",
@@ -61,7 +64,6 @@ local no_backslash_add_space = {
   "sim",
   "iff",
   "cdot",
-  "perp",
 }
 
 local map = require("snippets.utils").map

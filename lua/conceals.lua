@@ -17,6 +17,23 @@ local function setup_custom_conceals()
     -- Additional syntax matches can be added here
 end
 
+vim.cmd [[
+    let g:mkdp_preview_options = {
+        \ 'mkit': {},
+        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}"}},
+        \ 'uml': {},
+        \ 'maid': {},
+        \ 'disable_sync_scroll': 0,
+        \ 'sync_scroll_type': 'middle',
+        \ 'hide_yaml_meta': 1,
+        \ 'sequence_diagrams': {},
+        \ 'flowchart_diagrams': {},
+        \ 'content_editable': v:false,
+        \ 'disable_filename': 0,
+        \ 'toc': {}
+        \ }
+    ]]
+
 -- Create an autocommand group for markdown conceal settings
 local markdown_conceal_group = vim.api.nvim_create_augroup("MarkdownConceal", { clear = true })
 

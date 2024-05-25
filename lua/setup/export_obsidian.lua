@@ -107,3 +107,5 @@ fi
   -- open and compile the latex
   vim.cmd("e " .. new_dir .. "output/output.tex")
 end
+
+vim.keymap.set('n', '<Space>el', Export_Longform, {desc= "[E]xport [L]ongform"})

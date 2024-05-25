@@ -251,7 +251,16 @@ return {
   {
     'folke/persistence.nvim',
     -- event = 'BufReadPre', -- this will only start session saving when an actual file was opened
-    event = 'VimEnter', -- this will only start session saving when an actual file was opened
+    event = 'BufReadPre',
+    opts = { -- default options
+  dir = vim.fn.expand(vim.fn.stdpath("state") .. "/sessions/"), -- directory where session files are saved
+  options = { "buffers", "curdir", "tabpages", "winsize" }, -- sessionoptions used for saving
+  pre_save = nil, -- a function to call before saving the session
+  post_save = nil, -- a function to call after saving the session
+  save_empty = false, -- don't save if there are no open file buffers
+  pre_load = nil, -- a function to call before loading the session
+  post_load = nil, -- a function to call after loading the session
+}
   },
   {
     'nvimdev/dashboard-nvim',
@@ -276,7 +285,7 @@ return {
         hide = {
           -- this is taken care of by lualine
           -- enabling this messes up the actual laststatus setting after loading a file
-          statusline = false,
+          statusline = true,
         },
         config = {
           header = vim.split(logo, '\n'),
@@ -320,6 +329,7 @@ return {
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
+    enabled = false,
     -- See `:help lualine.txt`
     opts = {
       options = {
@@ -354,6 +364,7 @@ return {
       -- requirements installed.
       {
         'nvim-telescope/telescope-fzf-native.nvim',
+        'axkirillov/easypick.nvim',
         -- NOTE: If you are having trouble with this installation,
         --       refer to the README for telescope-fzf-native for more instructions.
         build = 'make',

@@ -44,10 +44,6 @@ local hats = {
     tex = "mathbb",
   },
   {
-    trig = "rm",
-    tex = "mathrm",
-  },
-  {
     trig = "br",
     tex = "mathbr",
   },
@@ -69,6 +65,13 @@ local hats = {
   },
 }
 
+word_snippets = {
+  {
+    trig = "rm",
+    tex = "mathrm",
+  },
+}
+
 return function(is_math, not_math)
   local function make_letter_hat_snippet(hat)
     return s({
@@ -84,7 +87,24 @@ return function(is_math, not_math)
         return "\\" .. hat.tex .. "{" .. snip.captures[1] .. "}"
       end) })
   end
-  local function make_hat_snippet(hat)
+
+local function make_word_hat_snippet(hat)
+    return s({
+      trig = "([^$| _%[%]()]+)" .. hat.trig,
+      -- trig = "(%a)" .. hat.trig,
+      regTrig = true,
+      wordTrig = false,
+      --TODO: make another snippet that includes everything up to space
+      name = hat.tex,
+      priority = 100,
+      condition = is_math,
+      snippetType = "autosnippet",
+    }, { f(function(_, snip)
+      return "\\" .. hat.tex .. "{" .. snip.captures[1] .. "}"
+    end) })
+  end
+
+  local function make_word_hat_snippet(hat)
     return s({
       trig = "([^$| _%[%]()]+)" .. hat.trig,
       -- trig = "(%a)" .. hat.trig,
@@ -113,6 +133,7 @@ return function(is_math, not_math)
         return "\\" .. hat.tex .. "{\\" .. letter .. "}"
       end) })
   end
-  return concat({doubleMap(greek_letters, hats, greek_hat_snippets),  map(hats, make_hat_snippet), map(hats, make_letter_hat_snippet)})
+
+  return concat({doubleMap(greek_letters, hats, greek_hat_snippets),  map(word_snippets, make_word_hat_snippet), map(hats, make_letter_hat_snippet)})
   -- ,
 end

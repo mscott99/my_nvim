@@ -7,6 +7,22 @@ vim.keymap.set('n', '<leader>tt', '<cmd>Toc<cr>', {desc= "[T]able [O]f [C]ontent
 --Search and replace from selection
 vim.keymap.set('v', "<C-r>", [["hy:s/\(<C-R>=escape(@h, "/\\:")<cr>\)//g<left><left>]])
 
+--Show file name
+vim.keymap.set('n', '<leader>fn', '<cmd>echo expand("%:t")<cr>', {desc = "[F]ile [N]ame"})
+
+--Copy file name without file extension
+vim.keymap.set('n', '<leader>ga', '<cmd>let @+ = expand("%:t:r")<cr>', {desc = "[G]et file [A]ddress"})
+
+--Next item in quickfix
+vim.keymap.set({'n', 'i'}, '<C-n>', '<cmd>cnext<cr>', {desc = "[Q]uickfix [N]ext"})
+-- Previous item in quickfix
+vim.keymap.set({'n', 'i'}, '<C-p>', '<cmd>cprev<cr>', {desc = "[Q]uickfix [P]revious"})
+-- Show quickfix
+vim.keymap.set('n', '<leader>qo', '<cmd>copen<cr>', {desc = "[Q]uickfix [O]pen"})
+-- Close quickfix
+vim.keymap.set('n', '<leader>qn', '<cmd>cclose<cr>', {desc = "[Q]uickfix [N]ot"})
+
+
 -- deal with sentences, even with surround plugins
 vim.keymap.set('o', "gas", "as", {desc="[A]round [S]entence"})
 vim.keymap.set('o', "gis", "is", {desc="[A]round [S]entence"})
@@ -34,7 +50,7 @@ vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 vim.keymap.set("n", "<leader>qq", [[<cmd>qa<cr>]])
 
 vim.keymap.set({'n', 'i'}, "<C-s>", "<cmd>w<cr>", { desc = "Save file" })
-vim.keymap.set('n', "<Esc>", "<cmd>noh<cr><Esc>")
+vim.keymap.set('n', "<Esc>", "<Esc><cmd>noh<cr>")
 
 -- funky keymaps
 
@@ -43,6 +59,20 @@ vim.keymap.set("n", "<leader>fd", "<cmd>call delete(expand('%')) | bdelete!<CR>"
 vim.api.nvim_create_user_command('FileDelete', function()
    vim.cmd("call delete(expand('%')) | bdelete!")
 end, {})
+
+-- Open buffer in another split
+function open_buffer_in_split()
+   local current_file = vim.fn.expand('%:p')
+   local cursor = vim.api.nvim_win_get_cursor(0)
+   -- Switch to the other split
+   vim.cmd('wincmd w')
+   -- Open the current file in the other split
+   vim.cmd('edit ' .. current_file)
+   vim.api.nvim_win_set_cursor(0, cursor)
+   vim.cmd('ObsidianFollowLink')
+end
+
+vim.keymap.set("n", "<leader>gf", open_buffer_in_split, {desc = "Go to file in other split"})
 
 -- Some primagen shortcuts
 vim.keymap.set({ "n", "x", "v" }, "<Cmd-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Go to another tmux place." })
@@ -53,5 +83,4 @@ vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv")
 
 vim.keymap.set({ "x", "n" }, "H", "^") -- Make H for alternate file
 
-vim.keymap.set("n", "<leader>cn", [[<cmd>let @+ = expand("%")<CR>]], { desc = "[C]opy file [N]ame"})
 vim.keymap.set("n", "<leader>cp", [[<cmd>let @+ = expand("%:p")<CR>]], { desc = "[C]opy [P]ath"})

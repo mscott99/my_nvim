@@ -7,6 +7,7 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+	['<C-q>'] = require('telescope.actions').smart_send_to_qflist
       },
     },
   },
@@ -45,6 +46,7 @@ local function live_grep_git_root()
   if git_root then
     require('telescope.builtin').live_grep {
       cwd = { git_root },
+      use_regex = true,
     }
   end
 end
@@ -81,6 +83,26 @@ local function oldfiles_in_git_dir()
   end
 end
 
+local builtin = require("telescope.builtin")
+
+local live_grep_qflist = function()
+        local qflist = vim.fn.getqflist()
+	local filetable = {}
+	local hashlist = {}
+
+	for _, value in pairs(qflist) do
+		local name = vim.api.nvim_buf_get_name(value.bufnr)
+		 
+		if name and not hashlist[name] then
+			hashlist[name] = true
+			table.insert(filetable, name)
+		end
+	end
+
+	builtin.live_grep({ search_dirs = filetable,
+  use_regex = true,})
+end
+
 vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 
 -- See `:help telescope.builtin`
@@ -97,11 +119,40 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 local function telescope_live_grep_open_files()
   require('telescope.builtin').live_grep {
     grep_open_files = true,
+    use_regex = true,
     prompt_title = 'Live Grep in Open Files',
   }
 end
 
+-- require('easypick').setup({})
 
+-- pickers = {}.
+--   -- diff current branch with base_branch and show files that changed with respective diffs in preview
+  -- {
+  --   name = "changed_files",
+  --   command = "git diff --name-only $(git merge-base HEAD " .. base_branch .. " )",
+  --   previewer = easypick.previewers.branch_diff({base_branch = base_branch})
+  -- },
+-- }
+local easypick = require("easypick")
+local get_default_branch = "git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's!.*/!!'"
+local base_branch = vim.fn.system(get_default_branch) or "main"
+easypick.setup({
+  pickers = {
+    {
+      name = "changed_files",
+      command = "git diff --name-only $(git merge-base HEAD " .. base_branch .. " )",
+      previewer = easypick.previewers.branch_diff({base_branch = base_branch})
+    },
+    {
+      name = "conflicts",
+      command = "git diff --name-only --diff-filter=U --relative",
+      previewer = easypick.previewers.file_diff()
+    },
+  }
+})
+
+vim.keymap.set('n', '<leader>fgc', "<cmd>Easypick changed_files<cr>", {desc="[F]ind [G]it [C]hanged"})
 
 vim.keymap.set('n', '<leader>fp', function()
   require('telescope.builtin').find_files { cwd = require('lazy.core.config').options.root }
@@ -127,10 +178,12 @@ end, { desc = '[F]ind [C]onfig File' })
 vim.keymap.set('n', '<leader>sc', function()
   require('telescope.builtin').live_grep {
     search_dirs = search_dirs, -- still missing the files at the root of dotfiles folder
+    use_regex = true,
   }
 end, { desc = '[S]earch [C]onfig File' })
 vim.keymap.set('n', '<leader>fk', require('telescope.builtin').keymaps , { desc = '[T]elescope [K]eymaps'})
-vim.keymap.set('n', '<leader>sg', function() require('telescope.builtin').live_grep({cwd = find_git_root()}) end, { desc = '[S]earch by [G]rep on Git Root of Current File' })
+vim.keymap.set('n', '<leader>sg', function() require('telescope.builtin').live_grep({cwd = find_git_root(), use_regex= true,}) end, { desc = '[S]earch by [G]rep on Git Root of Current File' })
+vim.keymap.set('n', '<leader>sq', live_grep_qflist, {desc = '[S]earch [Q]uickfix list'})
 vim.keymap.set('n', '<leader>ff', function() require('telescope.builtin').find_files({cwd = find_git_root()}) end, { desc = '[F]ind [F]iles' })
 vim.keymap.set('n', '<leader>fh', hidden_files_git_root, { desc = '[F]ind [H]idden files' })
 vim.keymap.set('n', '<leader>sh', grep_hidden_files_git_root, { desc = '[S]earch [H]idden files' })
