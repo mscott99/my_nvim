@@ -4,7 +4,7 @@ local ls = require("luasnip")
 local sn = ls.snippet_node
 local i = ls.insert_node
 
-function M.get_visual(args, parent) -- use with dynamic node d(1, get_visual)
+function M.get_visual(_, parent) -- use with dynamic node d(1, get_visual)
   if #parent.snippet.env.LS_SELECT_RAW > 0 then
     return sn(nil, i(1, parent.snippet.env.LS_SELECT_RAW))
   else -- If LS_SELECT_RAW is empty, return a blank insert node
@@ -17,7 +17,7 @@ end
   -- Do not include the first word starting with &, and do not include the last "\\" at the end of the line.
 -- check that the previous line is not the start of the align environment
 
-function M.get_prev_align_line(args, parent)
+function M.get_prev_align_line(_, _)
   local buf = vim.api.nvim_get_current_buf()
   local row = vim.api.nvim_win_get_cursor(0)[1] - 2
   local line = vim.api.nvim_buf_get_lines(buf, row, row + 1, false)[1]
@@ -60,7 +60,7 @@ end
 
 function M.concat(tables)
   local v = {}
-  for key, value in pairs(tables) do
+  for _, value in pairs(tables) do
     vim.list_extend(v, value)
   end
   return v
@@ -89,7 +89,7 @@ local function check_in_mathzone()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   row = row - 1
   col = col - 1
-  parser = ts.get_parser(buf)
+  local parser = ts.get_parser(buf)
   parser:parse()
   if
     parser:children()["markdown_inline"] ~= nil

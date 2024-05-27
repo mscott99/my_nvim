@@ -5,7 +5,7 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<leader>tt', '<cmd>Toc<cr>', {desc= "[T]able [O]f [C]ontents"})
 
 --Search and replace from selection
-vim.keymap.set('v', "<C-r>", [["hy:s/\(<C-R>=escape(@h, "/\\:")<cr>\)//g<left><left>]])
+vim.keymap.set('v', "<C-r>", [["hy:s/\V\(<C-R>=@h<cr>\)//g<left><left>]])
 
 --Show file name
 vim.keymap.set('n', '<leader>fn', '<cmd>echo expand("%:t")<cr>', {desc = "[F]ile [N]ame"})
@@ -61,7 +61,7 @@ vim.api.nvim_create_user_command('FileDelete', function()
 end, {})
 
 -- Open buffer in another split
-function open_buffer_in_split()
+local function open_buffer_in_split()
    local current_file = vim.fn.expand('%:p')
    local cursor = vim.api.nvim_win_get_cursor(0)
    -- Switch to the other split

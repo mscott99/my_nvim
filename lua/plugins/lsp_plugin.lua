@@ -1,5 +1,9 @@
 return {
   {
+    'nvim-neotest/neotest-jest',
+    commit = '0e6e77c',
+  },
+  {
     'nvim-neotest/neotest',
     dependencies = { 'nvim-neotest/neotest-python', 'nvim-neotest/neotest-jest' },
     config = function()
