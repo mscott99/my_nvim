@@ -90,14 +90,16 @@ local function check_in_mathzone()
   row = row - 1
   col = col - 1
   local parser = ts.get_parser(buf)
-  parser:parse()
+  parser:parse(true)
   if
     parser:children()["markdown_inline"] ~= nil
     and parser:children()["markdown_inline"]:children()["latex"] ~= nil
     and parser:children()["markdown_inline"]:children()["latex"]:contains({ row, col, row, col })
   then
+    print("in mathzone")
     return true
   else
+    print("not in mathzone")
     return false
   end
 end

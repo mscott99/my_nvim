@@ -157,19 +157,21 @@ vim.keymap.set('n', '<leader>fgc', "<cmd>Easypick changed_files<cr>", {desc="[F]
 vim.keymap.set('n', '<leader>fp', function()
   require('telescope.builtin').find_files { cwd = require('lazy.core.config').options.root }
 end, { desc = 'Find Plugin File' })
-vim.keymap.set('n', '<leader>ss', '<cmd>Telescope lsp_document_symbols<CR>', { desc = '[S]earch Document [S]ymbols' })
+vim.keymap.set('n', '<leader>ss', '<cmd>Telescope lsp_document_symbols<CR>', { desc = '[S]earch ocument [S]ymbols' })
 vim.keymap.set('n', '<leader>sS', '<cmd>Telescope lsp_workspace_symbols<CR>', { desc = '[S]earch Workspace [S]ymbols' })
 vim.keymap.set('n', '<leader>sp', '<cmd>Telescope <CR>', { desc = '[S]earch [P]ickers' })
 
+local current_config = '~/.config/'.. require"os".getenv("NVIM_APPNAME")
 local search_dirs = {
+  current_config,
   '~/.config/skhd/',
   '~/.config/nvim/',
-  '~/.config/kickstarted_nvim/',
   '~/.config/skhd/',
   '~/.config/yabai/',
   '~/.config/export_obsidian/',
   '~/.config/alacritty/',
 }
+
 vim.keymap.set('n', '<leader>fc', function()
   require('telescope.builtin').find_files {
     search_dirs = search_dirs, -- still missing the files at the root of dotfiles folder
@@ -191,7 +193,7 @@ vim.keymap.set('n', '<leader>fr', require("telescope.builtin").oldfiles, { desc 
 vim.keymap.set('n', '<leader>fR', oldfiles_in_git_dir, { desc = '[F]ind [R]ecent files' })
 -- find buffers
 vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers, {desc = '[F]ind [B]uffers'})
---TODO: also add pickers which include hidden files.
+--TOO: also add pickers which include hidden files.
 
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
 -- vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
