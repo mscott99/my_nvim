@@ -13,6 +13,8 @@ local function setup_custom_conceals()
     syntax match texMathCmd '\\colonequals' conceal cchar=≔
 
     syntax match texMathCmd '\\boldsymbol{e}' conceal cchar=𝐞
+    syntax match texMathCmd '\\bar{\\cap}' conceal cchar=⩃
+    syntax match texMathCmd '\\indicator' conceal cchar=𝟙
     ]]
     -- Additional syntax matches can be added here
 end
@@ -20,7 +22,7 @@ end
 vim.cmd [[
     let g:mkdp_preview_options = {
         \ 'mkit': {},
-        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}"}},
+        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\indicator":"\\mathbb{1}"}},
         \ 'uml': {},
         \ 'maid': {},
         \ 'disable_sync_scroll': 0,

@@ -28,6 +28,7 @@ return function(is_math, not_math)
     ),
     s({ trig = "UU", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\bigcup") }),
     s({ trig = "Cap", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\bigcap") }),
+    s({ trig = "ind", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\indicator") }),
     s({ trig = "ooo", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\infty") }),
     s({ trig = "del", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\partial") }),
     s(
