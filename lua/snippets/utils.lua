@@ -168,6 +168,17 @@ M.greek_letters = {
   "Chi",
 }
 
+M.short_greek = {
+  "nu",
+  "Nu",
+  "pi",
+  "Pi",
+  "mu",
+  "Mu",
+  "eta", 
+  "Eta"
+} 
+
 local others = {
   "varepsilon",
 }

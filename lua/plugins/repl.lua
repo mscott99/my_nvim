@@ -33,16 +33,20 @@
 
 return {
   {
-    "akinsho/toggleterm.nvim",
+    'akinsho/toggleterm.nvim',
     enabled = false,
-    version = "*",
+    version = '*',
     config = true,
   },
   {
-    "jpalardy/vim-slime",
-    config= function()
-      vim.cmd[[
-      let g:slime_config_defaults["python_ipython"] = 0
+    'jpalardy/vim-slime',
+    config = function()
+      vim.g.slime_no_mappings = 1
+      vim.cmd [[
+      let g:slime_default_config = {"socket_name": "default", "target_pane": "1"}
+      let g:slime_dont_ask_default = 1
+      let g:slime_config_defaults["python_ipython"] = 1
+      let g:slime_preserve_curpos = 0
       let g:slime_config_defaults["dispatch_ipython_pause"] = 100
       let g:slime_target = "tmux"
 
@@ -59,10 +63,31 @@ return {
       return substitute(dedented_lines, add_eol_pat, "\n", "g")
       end
       endfunction
-
       ]]
+
+      vim.keymap.set('n', '<c-c><c-c>', function()
+        if vim.b.repl_created == nil then
+          if vim.bo.filetype == 'python' then
+            vim.cmd [[SlimeSend1 source ./venv/bin/activate
+              SlimeSend1 IPython --no-autoindent --matplotlib]]
+          end
+          vim.b.repl_created = true
+        end
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('{<Plug>SlimeMotionSend}}}{j', true, true, true), 'n')
+      end)
+      vim.keymap.set('v', '<c-c><c-c>', function()
+        if vim.b.repl_created == nil then
+          if vim.bo.filetype == 'python' then
+            vim.cmd [[SlimeSend1 source ./venv/bin/activate
+              SlimeSend1 IPython --no-autoindent --matplotlib]]
+          end
+          vim.b.repl_created = true
+        end
+        print("hi")
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>SlimeRegionSend', true, true, true), 'n')
+      end)
     end,
-    ft = {"python", "julia", "quarto"},
+    ft = { 'python', 'julia', 'quarto' },
   },
   --   enabled = false,
   --   init = function()

@@ -88,25 +88,9 @@ return function(is_math, not_math)
       end) })
   end
 
-local function make_word_hat_snippet(hat)
-    return s({
-      trig = "([^$| _%[%]()]+)" .. hat.trig,
-      -- trig = "(%a)" .. hat.trig,
-      regTrig = true,
-      wordTrig = false,
-      --TODO: make another snippet that includes everything up to space
-      name = hat.tex,
-      priority = 100,
-      condition = is_math,
-      snippetType = "autosnippet",
-    }, { f(function(_, snip)
-      return "\\" .. hat.tex .. "{" .. snip.captures[1] .. "}"
-    end) })
-  end
-
   local function make_word_hat_snippet(hat)
     return s({
-      trig = "([^$| _%[%]()]+)" .. hat.trig,
+      trig = "([^$%{%}| _%[%]()]+)" .. hat.trig,
       -- trig = "(%a)" .. hat.trig,
       regTrig = true,
       wordTrig = false,

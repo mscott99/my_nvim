@@ -39,10 +39,11 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { 'stylua' },
-        sh = { 'shfmt' },
+        sh = { 'shellcheck' },
         tex = { 'latexindent' },
         bib = { 'latexindent' },
         typescript = { 'prettier' },
+        python = {'autopep8'}
       },
     },
     keys = { '<leader>cf' },

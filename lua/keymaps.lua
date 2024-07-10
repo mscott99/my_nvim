@@ -4,8 +4,10 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 vim.keymap.set('n', '<leader>tt', '<cmd>Toc<cr>', {desc= "[T]able [O]f [C]ontents"})
 
+vim.keymap.set('n', '<leader>bd', '<cmd>bp | bd #<cr>', {desc = "[B]uffer [D]elete"})
+
 --Search and replace from selection
-vim.keymap.set('v', "<C-r>", [["hy:s/\V\(<C-R>=@h<cr>\)//g<left><left>]])
+vim.keymap.set('v', "<C-r>", [["hy:s/\V\(<C-R>=escape(@h, '/\')<cr>\)//g<left><left>]])
 
 --Show file name
 vim.keymap.set('n', '<leader>fn', '<cmd>echo expand("%:t")<cr>', {desc = "[F]ile [N]ame"})
@@ -40,6 +42,9 @@ vim.keymap.set('n', '<leader>ep', "<cmd>Oil<CR>", {desc = "[E]x[P]lore"})
 vim.keymap.set('n', '<leader>cf', '<cmd>Format<CR>', { desc = '[C]ode [F]ormat' })
 
 vim.keymap.set("n", "<leader>qs", [[<cmd>lua require("persistence").load()<cr>]], {})
+
+vim.keymap.set("n", "<leader>cc", [[<cmd>edit oil-ssh://cc///home/mscott99/projects/def-oyilmaz/mscott99
+<CR>]], {desc = '[C]ompute [C]an'})
 
 -- Window navigation
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
@@ -76,6 +81,10 @@ vim.keymap.set("n", "<leader>gf", open_buffer_in_split, {desc = "Go to file in o
 
 -- Some primagen shortcuts
 vim.keymap.set({ "n", "x", "v" }, "<Cmd-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Go to another tmux place." })
+vim.keymap.set("x", "<leader>np", [["_dP]])
+vim.keymap.set({"n", "v"}, "<leader>ny", [["+y]])
+vim.keymap.set("n", "<leader>nY", [["+Y]])
+vim.keymap.set({"n", "v"}, "<leader>nd", [["_d]])
 
 vim.keymap.set({ "v" }, "J", "mzJ`z")
 vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv")
