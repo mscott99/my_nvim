@@ -6,6 +6,8 @@ local function setup_custom_conceals()
     syntax match texMathCmd '\\prod' conceal cchar=Π
     syntax match texMathCmd '\\prob' conceal cchar=P
     syntax match texMathCmd '\\proj' conceal cchar=Π
+    syntax match texMathCmd '\\ri' conceal cchar=r
+    syntax match texMathCmd '\\hull' conceal cchar=h
     " syntax match texMathCmd '\\\<argsup' conceal cchar=\0
     " syntax match texMathCmd '\\\<arginf' conceal cchar=\0
     syntax match texMathCmd '\\lesssim' conceal cchar=≲

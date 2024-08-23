@@ -10,11 +10,11 @@ local short_greek = require('snippets.utils').short_greek
 return function(is_math, not_math)
   local letter_snippets = vim.tbl_map(function(element)
     local first_letter = string.sub(element, 1, 1)
-    -- local second_letter = string.sub(element, 2, 2)
+    local second_letter = string.sub(element, 2, 2)
     return s({
       name = element,
-      -- trig = ";" .. first_letter .. second_letter,
-      trig = ';' .. first_letter,
+      trig = ";" .. first_letter .. second_letter,
+      -- trig = ';' .. first_letter,
       wordTrig = false, -- I need these to work even after the underscore.
       condition = is_math,
       snippetType = 'autosnippet',

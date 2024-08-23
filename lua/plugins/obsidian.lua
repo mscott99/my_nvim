@@ -1,73 +1,83 @@
 return {
   {
-    "iamcco/markdown-preview.nvim",
-    build = function()
-      vim.fn["mkdp#util#install"]()
-    end,
+    'oflisback/obsidian-bridge.nvim',
+    lazy = true,
+    event = 'BufReadPre /Users/matthewscott/Obsidian/**.md',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim'},
     config = function()
-      vim.keymap.set({ "n", "v" }, "<leader>mp", "<cmd>MarkdownPreviewToggle<CR>", { desc = "[m]arkdown [p]review" })
+      require('obsidian-bridge').setup({scroll_sync = true})
+      vim.keymap.set({'n'}, "<leader>ot", "<cmd>ObsidianBridgeTelescopeCommand<cr>", {desc= '[O]bsidian [T]elescope'})
     end,
-    ft = "markdown",
   },
   {
-    "nvim-treesitter/playground",
-    cmd = "TSPlaygroundToggle",
+    'iamcco/markdown-preview.nvim',
+    build = function()
+      vim.fn['mkdp#util#install']()
+    end,
+    config = function()
+      vim.keymap.set({ 'n', 'v' }, '<leader>mp', '<cmd>MarkdownPreviewToggle<CR>', { desc = '[m]arkdown [p]review' })
+    end,
+    ft = 'markdown',
+  },
+  {
+    'nvim-treesitter/playground',
+    cmd = 'TSPlaygroundToggle',
   },
   {
     -- "preservim/vim-markdown",
-    "ixru/nvim-markdown",
+    'ixru/nvim-markdown',
     config = function()
-      vim.cmd([[set conceallevel=2
+      vim.cmd [[set conceallevel=2
       " let g:vim_markdown_conceal = 2
       " let g:vim_markdown_math = 1
       map <Plug> <Plug>Markdown_Fold
       nmap zc <Plug>Markdown_Fold
       " let g:vim_markdown_fenced_languages = ['julia=jl']
-      ]])
+      ]]
     end,
     enabled = true,
-    ft = "markdown",
+    ft = 'markdown',
     keys = {
-      { "[[", "<Plug>Markdown_MoveToPreviousHeader<CR>", desc = "Previous [H]eader"},
-      { "]]", "<Plug>Markdown_MoveToNextHeader<CR>", desc = "Next [H]eader"},
-      { "<leader>ih", "<cmd>'<,'>HeaderDecrease<cr>", mode = "v" , desc = "[I]ncrease [H]eader"},
-      { "<leader>lh", "<cmd>'<,'>HeaderIncrease<cr>", mode = "v" , desc = "[L]ower [H]eader"},
+      { '[[', '<Plug>Markdown_MoveToPreviousHeader<CR>', desc = 'Previous [H]eader' },
+      { ']]', '<Plug>Markdown_MoveToNextHeader<CR>', desc = 'Next [H]eader' },
+      { '<leader>ih', "<cmd>'<,'>HeaderDecrease<cr>", mode = 'v', desc = '[I]ncrease [H]eader' },
+      { '<leader>lh', "<cmd>'<,'>HeaderIncrease<cr>", mode = 'v', desc = '[L]ower [H]eader' },
     },
     -- event="BufEnter *.md"
   },
   {
-    "epwalsh/obsidian.nvim",
+    'epwalsh/obsidian.nvim',
     enabled = true,
     lazy = true,
-    event = "BufReadPre " .. vim.fn.expand("~") .. "/Obsidian/**.md",
-    cmd = { "ObsidianOpen", "ObsidianQuickSwitch", "ObsidianSearch" },
+    event = 'BufReadPre ' .. vim.fn.expand '~' .. '/Obsidian/**.md',
+    cmd = { 'ObsidianOpen', 'ObsidianQuickSwitch', 'ObsidianSearch' },
     -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand':
     -- event = { "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md" },
     dependencies = {
       -- Required.
-      "nvim-lua/plenary.nvim",
+      'nvim-lua/plenary.nvim',
 
       -- Optional, for completion.
-      "hrsh7th/nvim-cmp",
+      'hrsh7th/nvim-cmp',
 
       -- Optional, for search and quick-switch functionality.
-      "nvim-telescope/telescope.nvim",
+      'nvim-telescope/telescope.nvim',
 
       -- Optional, alternative to nvim-treesitter for syntax highlighting.
-      "godlygeek/tabular",
+      'godlygeek/tabular',
       -- "preservim/vim-markdown",
-      "ixru/nvim-markdown",
+      'ixru/nvim-markdown',
     },
     opts = {
-      dir = "~/Obsidian/myVault/", -- no need to call 'vim.fn.expand' here
+      dir = '~/Obsidian/myVault/', -- no need to call 'vim.fn.expand' here
 
       -- Optional, if you keep notes in a specific subdirectory of your vault.
-      notes_subdir = "Zettelkasten/",
+      notes_subdir = 'Zettelkasten/',
       daily_notes = {
         -- Optional, if you keep daily notes in a separate directory.
-        folder = "Temporal/Daily Notes/",
+        folder = 'Temporal/Daily Notes/',
         -- Optional, if you want to change the date format for daily notes.
-        date_format = "%Y-%m-%d",
+        date_format = '%Y-%m-%d',
       },
 
       -- Optional, completion.
@@ -90,7 +100,7 @@ return {
         local out = {}
         -- `note.metadata` contains any manually added fields in the frontmatter.
         -- So here we just make sure those fields are kept in the frontmatter.
-        if note.metadata ~= nil and require("obsidian").util.table_length(note.metadata) > 0 then
+        if note.metadata ~= nil and require('obsidian').util.table_length(note.metadata) > 0 then
           for k, v in pairs(note.metadata) do
             out[k] = v
           end
@@ -109,7 +119,7 @@ return {
       -- URL it will be ignored but you can customize this behavior here.
       follow_url_func = function(url)
         -- Open the URL in the default web browser.
-        vim.fn.jobstart({ "open", url }) -- Mac OS
+        vim.fn.jobstart { 'open', url } -- Mac OS
         -- vim.fn.jobstart({"xdg-open", url})  -- linux
       end,
 
@@ -126,26 +136,26 @@ return {
       -- finder you can attempt it first. Note that if the specified finder
       -- is not installed, or if it the command does not support it, the
       -- remaining finders will be attempted in the original order.
-      finder = "telescope.nvim",
+      finder = 'telescope.nvim',
     },
     config = function(_, opts)
-      require("setup.export_obsidian") -- load personal export function.
-      require("obsidian").setup(opts)
+      require 'setup.export_obsidian' -- load personal export function.
+      require('obsidian').setup(opts)
 
       -- Optional, override the 'gf' keymap to utilize Obsidian's search functionality.
       -- see also: 'follow_url_func' config option above.
-      vim.keymap.set("n", "gf", function()
-        if require("obsidian").util.cursor_on_markdown_link() then
-          return "<cmd>ObsidianFollowLink<CR>"
+      vim.keymap.set('n', 'gf', function()
+        if require('obsidian').util.cursor_on_markdown_link() then
+          return '<cmd>ObsidianFollowLink<CR>'
         else
-          return "gf"
+          return 'gf'
         end
       end, { noremap = false, expr = true })
     end,
     keys = {
-      { "<leader>of", "<cmd>ObsidianQuickSwitch<CR>", desc = "Open Obsidian File" },
-      { "<leader>oo", "<cmd>ObsidianOpen<CR>", desc = "Open Note in Obsidian" },
-      { "<leader>ob", "<cmd>ObsidianBacklinks<CR>", desc = "Open Backlinks" },
+      { '<leader>of', '<cmd>ObsidianQuickSwitch<CR>', desc = 'Open Obsidian File' },
+      { '<leader>oo', '<cmd>ObsidianOpen<CR>', desc = 'Open Note in Obsidian' },
+      { '<leader>ob', '<cmd>ObsidianBacklinks<CR>', desc = 'Open Backlinks' },
     },
   },
 }

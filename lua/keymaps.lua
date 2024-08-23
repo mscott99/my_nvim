@@ -54,7 +54,7 @@ vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
 vim.keymap.set("n", "<leader>qq", [[<cmd>qa<cr>]])
 
-vim.keymap.set({'n', 'i'}, "<C-s>", "<cmd>w<cr>", { desc = "Save file" })
+vim.keymap.set({'n', 'i'}, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 vim.keymap.set('n', "<Esc>", "<Esc><cmd>noh<cr>")
 
 -- funky keymaps
@@ -86,8 +86,9 @@ vim.keymap.set({"n", "v"}, "<leader>ny", [["+y]])
 vim.keymap.set("n", "<leader>nY", [["+Y]])
 vim.keymap.set({"n", "v"}, "<leader>nd", [["_d]])
 
-vim.keymap.set({ "v" }, "J", "mzJ`z")
-vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv")
+vim.api.nvim_set_keymap('x', 'J', 'J', { noremap = true, silent = true })
+vim.keymap.set("v", "J", "mzJ`z")
+-- vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv")
 
 vim.keymap.set({ "x", "n" }, "H", "^") -- Make H for alternate file

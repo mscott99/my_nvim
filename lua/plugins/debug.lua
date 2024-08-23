@@ -73,6 +73,11 @@ return {
         dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
       end, { desc = 'Debug: Set Breakpoint' })
 
+      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+      vim.keymap.set('n', '<leader>dut', dapui.toggle, { desc = 'Debug: See last session result.' })
+
+      vim.keymap.set({ 'n', 'v' }, '<leader>dh', dapui.eval , { noremap = true, silent = true })
+
       require('mason-nvim-dap').setup {
         -- Makes a best effort to setup the various debuggers with
         -- reasonable debug configurations
@@ -119,10 +124,10 @@ return {
         },
       }
 
-      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      vim.keymap.set('n', '<leader>dut', dapui.toggle, { desc = 'Debug: See last session result.' })
 
-      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+      dap.listeners.after.event_initialized['dapui_config'] = function()
+        dapui.open()
+      end
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close
       dap.listeners.before.event_exited['dapui_config'] = dapui.close
 

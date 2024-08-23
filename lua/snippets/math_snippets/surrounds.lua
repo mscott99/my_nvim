@@ -24,8 +24,9 @@ return function(is_math, not_math)
     s({ condition = is_math, trig = "abs", snippetType = "autosnippet" }, fmta([[|<>|]], { d(1, get_visual) })),
     s({ condition = is_math, trig = "lr(", snippetType = "autosnippet" }, fmta([[\left(<>\right)]], { d(1, get_visual) })),
     s({ condition = is_math, trig = "lr[", snippetType = "autosnippet" }, fmta("\\left[<>\\right]", { d(1, get_visual) })),
-    -- s({ trig = "[", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("[<>]", { d(1, get_visual) })),
-    -- s({ trig = "{", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("{<>}", { d(1, get_visual) })),
+    s({ trig = "[", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("[<>]", { d(1, get_visual) })),
+    s({ trig = "{", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("{<>}", { d(1, get_visual) })),
+    s({ trig = "(", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("(<>)", { d(1, get_visual) })),
     s(
       { condition = is_math, trig = "bra", snippetType = "autosnippet" },
       fmta("\\langle <>, <>\\rangle", { d(1, get_visual), i(2) })

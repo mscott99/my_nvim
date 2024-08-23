@@ -22,6 +22,8 @@ return function(is_math, not_math)
     s({ trig = "Bo", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("B_\\infty") }),
     s({ trig = "Rn", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^n") }),
     s({ trig = "Rk", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^k") }),
+    s({ trig = "NN", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{N}") }),
+    s({ trig = "CC", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{C}") }),
     s(
       { trig = "iff", condition = is_math, wordTrig = true, priority = 1100, snippetType = "autosnippet" },
       { t("\\iff") }
@@ -53,7 +55,7 @@ return function(is_math, not_math)
     s({ trig = "leq", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\le ") }),
     s({ trig = "geq", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\ge ") }),
     s({ trig = "les", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\lesssim ") }),
-    s({ trig = "ges", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\gtrsim ") }),
+    s({ trig = "gts", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\gtrsim ") }),
     s({ trig = [[__]], wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("_{<>}", { i(1) })),
     s({ trig = "^^", wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),
     s({ trig = "rs", wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),

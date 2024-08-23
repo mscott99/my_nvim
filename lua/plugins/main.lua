@@ -10,16 +10,17 @@ return {
   'tpope/vim-sleuth',
   {
     'windwp/nvim-autopairs',
-    event = "InsertEnter",
-    opts = {} -- this is equalent to setup({}) function
+    ft = {"python", "lua", "julia"},
+    -- event = 'InsertEnter',
+    opts = {}, -- this is equalent to setup({}) function
   },
   {
-    "benfowler/telescope-luasnip.nvim",
-    event = "InsertEnter",
-    module = "telescope._extensions.luasnip",
+    'benfowler/telescope-luasnip.nvim',
+    event = 'InsertEnter',
+    module = 'telescope._extensions.luasnip',
     config = function()
-      require('telescope').load_extension('luasnip')
-    end
+      require('telescope').load_extension 'luasnip'
+    end,
   },
   {
     'mbbill/undotree',
@@ -45,20 +46,20 @@ return {
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
       {
-        "microsoft/python-type-stubs",
-        cond = false
-      }
+        'microsoft/python-type-stubs',
+        cond = false,
+      },
     },
   },
   {
     'stevearc/oil.nvim',
     -- Optional dependencies
-    cmd = {'Oil'},
+    cmd = { 'Oil' },
     opts = {
       default_file_explorer = true,
     },
     lazy = false,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
   {
     'ThePrimeagen/harpoon',
@@ -76,7 +77,7 @@ return {
       local mark = require 'harpoon.mark'
       local ui = require 'harpoon.ui'
 
-      vim.keymap.set('n', '<leader>a', mark.add_file, {desc = "mark file"})
+      vim.keymap.set('n', '<leader>a', mark.add_file, { desc = 'mark file' })
       vim.keymap.set('n', '<C-e>', ui.toggle_quick_menu)
 
       vim.keymap.set('n', '<leader>j', function()
@@ -253,14 +254,14 @@ return {
     -- event = 'BufReadPre', -- this will only start session saving when an actual file was opened
     event = 'BufReadPre',
     opts = { -- default options
-  dir = vim.fn.expand(vim.fn.stdpath("state") .. "/sessions/"), -- directory where session files are saved
-  options = { "buffers", "curdir", "tabpages", "winsize" }, -- sessionoptions used for saving
-  pre_save = nil, -- a function to call before saving the session
-  post_save = nil, -- a function to call after saving the session
-  save_empty = false, -- don't save if there are no open file buffers
-  pre_load = nil, -- a function to call before loading the session
-  post_load = nil, -- a function to call after loading the session
-}
+      dir = vim.fn.expand(vim.fn.stdpath 'state' .. '/sessions/'), -- directory where session files are saved
+      options = { 'buffers', 'curdir', 'tabpages', 'winsize' }, -- sessionoptions used for saving
+      pre_save = nil, -- a function to call before saving the session
+      post_save = nil, -- a function to call after saving the session
+      save_empty = false, -- don't save if there are no open file buffers
+      pre_load = nil, -- a function to call before loading the session
+      post_load = nil, -- a function to call after loading the session
+    },
   },
   {
     'nvimdev/dashboard-nvim',
@@ -375,15 +376,15 @@ return {
     },
   },
   {
-    "benfowler/telescope-luasnip.nvim",
+    'benfowler/telescope-luasnip.nvim',
     dependencies = {
       'L3MON4D3/LuaSnip',
       'nvim-telescope/telescope.nvim',
     },
-    cmd = "Telescope luasnip",
+    cmd = 'Telescope luasnip',
     config = function()
-      require('telescope').load_extension('luasnip')
-    end
+      require('telescope').load_extension 'luasnip'
+    end,
   },
   {
     -- Highlight, edit, and navigate code
@@ -393,7 +394,7 @@ return {
     },
     build = ':TSUpdate',
   },
-  { "nvim-treesitter/nvim-treesitter-textobjects" },
+  { 'nvim-treesitter/nvim-treesitter-textobjects' },
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
