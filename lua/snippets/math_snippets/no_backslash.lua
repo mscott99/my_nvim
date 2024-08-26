@@ -49,14 +49,12 @@ local no_backslash = {
 }
 
 local backslash_functions = {
-  'hull',
-  'ri',
+  'aff',
   'span',
 }
 
 local no_backslash_add_space = {
   'to',
-  'log',
   'circ',
   'cap',
   'cup',

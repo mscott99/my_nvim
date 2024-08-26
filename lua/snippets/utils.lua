@@ -183,7 +183,7 @@ local others = {
   "varepsilon",
 }
 
-M.redundant_starting_greeks = M.concat({M.greek_letters, others})
+M.redundant_starting_greeks = M.concat({M.greek_letters, others, M.short_greek})
 
 function M.in_markdown_mathzone()
   return check_in_mathzone()
