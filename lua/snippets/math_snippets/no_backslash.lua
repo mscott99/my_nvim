@@ -46,19 +46,20 @@ local no_backslash = {
   'liminf',
   'Cap',
   'Cup',
+  'circ',
+  'ell',
 }
 
 local backslash_functions = {
   'aff',
   'span',
+  'cone',
 }
 
 local no_backslash_add_space = {
   'to',
-  'circ',
   'cap',
   'cup',
-  'ell',
   'll',
   'implies',
   'times',
@@ -83,7 +84,7 @@ return function(is_math, not_math)
   end
 
   local function prefix_backslash_and_space(name)
-    return s({ trig = name, wordTrig = false, condition = is_math, snippetType = 'autosnippet' }, { t('\\' .. name .. ' ') })
+    return s({ trig = name, wordTrig = false, condition = is_math, snippetType = 'autosnippet' }, { t(' \\' .. name .. ' ') })
   end
 
   return concat {

@@ -24,7 +24,7 @@ local hats = {
     tex = "vec",
   },
   {
-    trig = "tilde",
+    trig = "tld",
     tex = "tilde",
   },
   {

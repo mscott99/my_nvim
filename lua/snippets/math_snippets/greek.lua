@@ -20,7 +20,7 @@ return function(is_math, not_math)
       snippetType = 'autosnippet',
       priority = 300,
     }, { t('\\' .. element) })
-  end, greek_letters)
+  end, all_greek_letters)
 
   local no_bck_snippets = vim.tbl_map(function(element)
     return s({
@@ -63,14 +63,13 @@ return function(is_math, not_math)
   vim.list_extend(letter_snippets, {
     s({
       name = 'vareps',
-      trig = ';e',
+      trig = ';ep',
       wordTrig = false,
       priority = 400,
       condition = is_math,
       snippetType = 'autosnippet',
     }, { t '\\varepsilon' }),
     s({ name = 'ell', trig = ';ll', wordTrig = false, condition = is_math, snippetType = 'autosnippet', priority = 400 }, { t '\\ell' }),
-    s({ name = 'eta', trig = ';ll', wordTrig = false, condition = is_math, snippetType = 'autosnippet', priority = 400 }, { t '\\eta' }),
   })
   return letter_snippets
 end

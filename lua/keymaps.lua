@@ -24,6 +24,7 @@ vim.keymap.set('n', '<leader>qo', '<cmd>copen<cr>', {desc = "[Q]uickfix [O]pen"}
 -- Close quickfix
 vim.keymap.set('n', '<leader>qn', '<cmd>cclose<cr>', {desc = "[Q]uickfix [N]ot"})
 
+vim.keymap.set('n', '<leader>yr', '<cmd>!yabai --restart-service<cr>', {desc= "[Y]abai [R]estart"})
 
 -- deal with sentences, even with surround plugins
 vim.keymap.set('o', "gas", "as", {desc="[A]round [S]entence"})

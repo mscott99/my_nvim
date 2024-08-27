@@ -31,6 +31,17 @@ return function(is_math, not_math)
       { condition = is_math, trig = "bra", snippetType = "autosnippet" },
       fmta("\\langle <>, <>\\rangle", { d(1, get_visual), i(2) })
     ),
+    s({
+      trig = "([^$%{%}| _%[%]()]-) ?os",
+      regTrig = true,
+      wordTrig = false,
+      name = "overset",
+      priority = 100,
+      condition = is_math,
+      snippetType = "autosnippet",
+    }, { t("\\overset{"),i(1), t("}{"), f(function(_, snip)
+      return snip.captures[1]
+    end), t("}")}),
     s(
       { condition = is_math, trig = "lrbra", snippetType = "autosnippet" },
       fmta("\\left\\langle <>, <>\\right\\rangle", { d(1, get_visual), i(2) })

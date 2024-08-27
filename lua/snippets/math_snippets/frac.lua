@@ -13,10 +13,10 @@ local get_visual = require("snippets.utils").get_visual
 
 return function(is_math, not_math)
   return {
-    s({ condition = not_math, trig = "mk", name = "Math", snippetType = "autosnippet" }, fmta([[$<>$]], { i(1, " ") })),
+    s({ condition = not_math, trig = "mk", name = "Math", snippetType = "autosnippet" }, fmta([[$<>$]], { i(1) })),
     s(
       { condition = not_math, trig = "dm", name = "Math", snippetType = "autosnippet" },
-      fmta("$$\t<>$$\n", { i(1) })
+      fmta("$$<>$$\n", { i(1) })
     ),
     s(
       {

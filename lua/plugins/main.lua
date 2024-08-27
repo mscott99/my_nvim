@@ -10,6 +10,7 @@ return {
   'tpope/vim-sleuth',
   {
     'windwp/nvim-autopairs',
+    enabled = false,
     ft = {"python", "lua", "julia"},
     -- event = 'InsertEnter',
     opts = {}, -- this is equalent to setup({}) function
