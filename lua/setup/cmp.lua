@@ -11,9 +11,6 @@ require('luasnip').config.setup {
   store_selection_keys = '<Tab>',
 }
 
--- require('luasnip').filetype_extend("quarto", { "markdown" })
--- luasnip.config.setup {}
-
 cmp.setup {
   snippet = {
     expand = function(args)

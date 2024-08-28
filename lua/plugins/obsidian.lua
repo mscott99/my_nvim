@@ -3,10 +3,10 @@ return {
     'oflisback/obsidian-bridge.nvim',
     lazy = true,
     event = 'BufReadPre /Users/matthewscott/Obsidian/**.md',
-    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim'},
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     config = function()
-      require('obsidian-bridge').setup({scroll_sync = true})
-      vim.keymap.set({'n'}, "<leader>ot", "<cmd>ObsidianBridgeTelescopeCommand<cr>", {desc= '[O]bsidian [T]elescope'})
+      require('obsidian-bridge').setup { scroll_sync = true }
+      vim.keymap.set({ 'n' }, '<leader>ot', '<cmd>ObsidianBridgeTelescopeCommand<cr>', { desc = '[O]bsidian [T]elescope' })
     end,
   },
   {
@@ -26,6 +26,7 @@ return {
   {
     -- "preservim/vim-markdown",
     'ixru/nvim-markdown',
+    enabled = true,
     config = function()
       vim.cmd [[set conceallevel=2
       " let g:vim_markdown_conceal = 2
@@ -35,7 +36,6 @@ return {
       " let g:vim_markdown_fenced_languages = ['julia=jl']
       ]]
     end,
-    enabled = true,
     ft = 'markdown',
     keys = {
       { '[[', '<Plug>Markdown_MoveToPreviousHeader<CR>', desc = 'Previous [H]eader' },

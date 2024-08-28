@@ -52,6 +52,7 @@ return function(is_math, not_math)
     s({ trig = "geq", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\ge ") }),
     s({ trig = "les", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\lesssim ") }),
     s({ trig = "=", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" = ") }),
+    s({ trig = ",", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(", ") }),
     s({ trig = "gts", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\gtrsim ") }),
     s({ trig = [[__]], wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("_{<>}", { i(1) })),
     s({ trig = "^^", wordTrig = false, condition = is_math, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),

@@ -14,7 +14,7 @@ return {
     -- ft = {"python", "lua", "julia"},
     event = 'InsertEnter',
     opts = {
-      disable_filetype = { 'markdown', 'latex', 'tex' }, -- handled by luasnip.
+      disable_filetype = { 'markdown', 'latex', 'tex', 'TelescopePrompt' }, -- handled by luasnip.
     },
   },
   {
@@ -100,15 +100,11 @@ return {
   {
     'ggandor/leap.nvim',
     lazy = false,
-    config = function(_, opts)
-      require('leap').add_default_mappings(true) -- will overwrite the s key.
-      -- vim.keymap.set({'n'}, "gs", function()
-      --   require("leap").leap {
-      --     target_windows = vim.tbl_filter(function(win)
-      --       return vim.api.nvim_win_get_config(win).focusable
-      --     end, vim.api.nvim_tabpage_list_wins(0)),
-      --   }
-      -- end, { noremap = true, silent = true })
+    config = function(_, _)
+      vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap-forward)')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap-backward)')
+      vim.keymap.set('v', 'x', '<Plug>(leap-forward)')
+      vim.keymap.set('v', 'X', '<Plug>(leap-backward)')
     end,
   },
   {
@@ -158,7 +154,9 @@ return {
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim', opts = {
+    notify = false,
+  } },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
