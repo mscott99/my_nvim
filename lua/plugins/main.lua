@@ -10,10 +10,12 @@ return {
   'tpope/vim-sleuth',
   {
     'windwp/nvim-autopairs',
-    enabled = false,
-    ft = {"python", "lua", "julia"},
-    -- event = 'InsertEnter',
-    opts = {}, -- this is equalent to setup({}) function
+    enabled = true,
+    -- ft = {"python", "lua", "julia"},
+    event = 'InsertEnter',
+    opts = {
+      disable_filetype = { 'markdown', 'latex', 'tex' }, -- handled by luasnip.
+    },
   },
   {
     'benfowler/telescope-luasnip.nvim',
