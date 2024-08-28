@@ -56,7 +56,18 @@ vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 vim.keymap.set("n", "<leader>qq", [[<cmd>qa<cr>]])
 
 vim.keymap.set({'n', 'i'}, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-vim.keymap.set('n', "<Esc>", "<Esc><cmd>noh<cr>")
+
+vim.keymap.set({'n', 'i'}, "<Esc>", "<Esc><cmd>noh<cr>")
+
+-- Set up an autocommand for a specific filetype
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown", -- Replace with the filetype you want, e.g., "python", "markdown", etc.
+  callback = function()
+    -- Define your keymap here
+    vim.keymap.set({"n", "i"}, "<Esc>", "<Esc><cmd>noh | w<cr>", { buffer = true })
+  end
+})
+
 
 -- funky keymaps
 

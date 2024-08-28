@@ -110,7 +110,7 @@ return function(is_math, not_math)
       regTrig = true,
       wordTrig = false,
       name = letter .. " ".. hat.tex,
-      priority = 2000,
+      priority = 700,
       condition = is_math,
       snippetType = "autosnippet",
     }, { f(function(_, snip)

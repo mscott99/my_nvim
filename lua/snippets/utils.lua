@@ -88,7 +88,7 @@ local function check_in_mathzone()
   local buf = vim.api.nvim_get_current_buf()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   row = row - 1
-  col = col - 1
+  col = col
   local parser = ts.get_parser(buf)
   parser:parse(true)
   if
