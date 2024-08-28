@@ -1,11 +1,5 @@
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
@@ -46,40 +40,14 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
--- local on_attach_qmd = function(client, bufnr)
---   local function buf_set_keymap(...)
---     vim.api.nvim_buf_set_keymap(bufnr, ...)
---   end
---   local function buf_set_option(...)
---     vim.api.nvim_buf_set_option(bufnr, ...)
---   end
---
---   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
---   local opts = { noremap = true, silent = true }
---
---   buf_set_keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
---   buf_set_keymap("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
---   buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
---   buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
---   buf_set_keymap("n", "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", opts)
---   client.server_capabilities.document_formatting = true
--- end
---
--- local lsp_flags = {
---   allow_incremental_sync = true,
---   debounce_text_changes = 150,
--- }
-
 -- document existing key chains
 require('which-key').register {
   ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
   ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
   ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  -- ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' }, is already a shortcut.
   ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
   ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
   ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-  -- ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
 }
 -- register which-key VISUAL mode
 -- required for visual <leader>hs (hunk stage) to work
@@ -93,47 +61,9 @@ require('which-key').register({
 require('mason').setup()
 require('mason-lspconfig').setup()
 
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
---
---  If you want to override the default filetypes that your language server will attach to you can
---  define the property 'filetypes' to the map in question.
-local util = require("lspconfig.util")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
--- local lsp_flags = {
---   allow_incremental_sync = true,
---   debounce_text_changes = 150,
--- }
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-
-  -- noisy errors about ambiguous links
-  -- marksman = {},
-  pyright = {
-    -- settings = {
-      -- python = {
-      --   stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
-      --   analysis = {
-      --     autoSearchPaths = true,
-      --     useLibraryCodeForTypes = false,
-      --     diagnosticMode = "openFilesOnly",
-      --   },
-      -- },
-    -- },
-    -- root_dir = function(fname)
-    --   return util.root_pattern(".obsidian", ".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(
-    --     fname
-    --   ) or util.path.dirname(fname)
-    -- end,
-  },
+  pyright = {},
   julials = {},
   typst_lsp = {
     settings = {
@@ -168,56 +98,3 @@ mason_lspconfig.setup_handlers {
 }
 
 require'lspconfig'.mojo.setup{}
-
--- local function strsplit(s, delimiter)
---   local result = {}
---   for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
---     table.insert(result, match)
---   end
---   return result
--- end
---
--- local function get_quarto_resource_path()
---   local f = assert(io.popen("quarto --paths", "r"))
---   local s = assert(f:read("*a"))
---   f:close()
---   return strsplit(s, "\n")[2]
--- end
---
--- local lua_library_files = vim.api.nvim_get_runtime_file("", true)
--- local lua_plugin_paths = {}
--- local resource_path = get_quarto_resource_path()
--- if resource_path == nil then
---   vim.notify_once("quarto not found, lua library files not loaded")
--- else
---   table.insert(lua_library_files, resource_path .. "/lua-types")
---   table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
--- end
---
--- require('lspconfig').lua_ls.setup({
---   on_attach = on_attach,
---   capabilities = capabilities,
---   flags = lsp_flags,
---   settings = {
---     Lua = {
---       completion = {
---         callSnippet = "Replace",
---       },
---       runtime = {
---         version = "LuaJIT",
---         plugin = lua_plugin_paths,
---       },
---       diagnostics = {
---         globals = { "vim", "quarto", "pandoc", "io", "string", "print", "require", "table" },
---         disable = { "trailing-space" },
---       },
---       workspace = {
---         library = lua_library_files,
---         checkThirdParty = false,
---       },
---       telemetry = {
---         enable = false,
---       },
---     },
---   },
--- })
