@@ -94,7 +94,7 @@ local function check_in_mathzone()
   if
     parser:children()["markdown_inline"] ~= nil
     and parser:children()["markdown_inline"]:children()["latex"] ~= nil
-    and parser:children()["markdown_inline"]:children()["latex"]:contains({ row, col, row, col })
+    and parser:children()["markdown_inline"]:children()["latex"]:contains({ row, col-1, row, col })
   then
     print("in mathzone")
     return true

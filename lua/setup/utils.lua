@@ -6,3 +6,7 @@
 --     vim.cmd([[%s/\\paragraph{\(.\{-}\)}/## \1/]])
 --     vim.cmd([[%s/\\cite\[\(.\{-}\)\]{\(.\{-}\)}/[[@\2]][\1]/g]])
 -- end, {})
+
+vim.api.nvim_create_user_command("ToAlign", function()
+  vim.cmd[[norm! 0ea$hikVgsagsaealign*wi&A\\]]
+end)
