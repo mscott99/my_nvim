@@ -1,3 +1,23 @@
+local copilot_status = true
+
+local function toggle_copilot()
+    if copilot_status then
+        -- Disable Copilot
+        vim.cmd('Copilot disable')
+        copilot_status = false
+        vim.notify("Copilot disabled", vim.log.levels.INFO)
+    else
+        -- Enable Copilot
+        vim.cmd('Copilot enable')
+        copilot_status = true
+        vim.notify("Copilot enabled", vim.log.levels.INFO)
+    end
+end
+
+-- Map the toggle function to a key
+vim.api.nvim_create_user_command('ToggleCopilot', toggle_copilot, {})
+vim.keymap.set('n', '<leader>tc', ':ToggleCopilot<CR>', { desc = '[T]oggle [C]opilot' })
+
 return {
   {
     -- Autocompletion

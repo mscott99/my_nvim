@@ -1,3 +1,31 @@
+local use_executable = true
+
+function ToggleTexlabExecutable()
+  use_executable = not use_executable
+  
+  local executable
+  local args
+  
+  if use_executable then
+    executable = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+    args = { '-g', '%l', '%p', '%f' }
+    print("texlabconfig forwardSearch enabled")
+  else
+    -- Set to nil to unset the executable
+    executable = nil
+    args = nil
+    print("nvim-texlabconfig disabled")
+  end
+  
+  -- Update the Texlab configuration
+  local texlab_config = require('lspconfig').texlab.manager.config
+  texlab_config.settings.texlab.forwardSearch.executable = executable
+  texlab_config.settings.texlab.forwardSearch.args = args
+  
+  -- Notify the server of the configuration change
+  vim.lsp.buf_notify(0, 'workspace/didChangeConfiguration', {settings = texlab_config.settings})
+end
+
 return {
   {
     'f3fora/nvim-texlabconfig',

@@ -23,7 +23,7 @@ end
 vim.cmd [[
     let g:mkdp_preview_options = {
         \ 'mkit': {},
-        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\indicator":"\\mathbb{1}"}},
+        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}"},},
         \ 'uml': {},
         \ 'maid': {},
         \ 'disable_sync_scroll': 0,

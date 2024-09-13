@@ -1,5 +1,46 @@
 -- Keymaps for better default experience
+--
+--
 -- See `:help vim.keymap.set()`
+
+local all_wrapped = nil
+
+local function toggle_wrap_mode()
+    local windows = vim.api.nvim_list_wins()
+    local wrap_state = all_wrapped == nil or not all_wrapped
+
+    for _, win_id in ipairs(windows) do
+        vim.api.nvim_win_set_option(win_id, 'wrap', wrap_state)
+    end
+
+    all_wrapped = wrap_state
+    vim.notify("Wrap mode set to " .. (wrap_state and "on" or "off") .. " for all windows.", vim.log.levels.INFO)
+end
+
+vim.keymap.set('n', '<leader>tw', toggle_wrap_mode, { desc = "[T]oggle [W]rap" })
+
+vim.keymap.set('n', '<leader>dt', function()
+-- Get all windows
+    local windows = vim.api.nvim_list_wins()
+    -- Check if we have exactly two windows
+    if #windows ~= 2 then
+        vim.notify("Please ensure you have exactly two windows open.", vim.log.levels.WARN)
+        return
+    end
+    -- Function to run diffthis on the current window
+    local function run_diffthis()
+        vim.cmd('diffthis')
+    end
+    -- Switch to the first window and run diffthis
+    vim.api.nvim_set_current_win(windows[1])
+    run_diffthis()
+    -- Switch to the second window and run diffthis
+    vim.api.nvim_set_current_win(windows[2])
+    run_diffthis()
+    -- Optionally, you might want to focus back on the first window
+    vim.api.nvim_set_current_win(windows[1])
+end, {desc="[D]iff [T]his"})
+
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 vim.keymap.set('n', '<leader>tt', '<cmd>Toc<cr>', {desc= "[T]able [O]f [C]ontents"})

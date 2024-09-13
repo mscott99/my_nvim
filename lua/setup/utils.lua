@@ -9,4 +9,4 @@
 
 vim.api.nvim_create_user_command("ToAlign", function()
   vim.cmd[[norm! 0ea$hikVgsagsaealign*wi&A\\]]
-end)
+end, {})
