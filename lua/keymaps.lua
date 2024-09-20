@@ -20,24 +20,36 @@ end
 vim.keymap.set('n', '<leader>tw', toggle_wrap_mode, { desc = "[T]oggle [W]rap" })
 
 vim.keymap.set('n', '<leader>dt', function()
--- Get all windows
+    -- Get all windows
     local windows = vim.api.nvim_list_wins()
     -- Check if we have exactly two windows
     if #windows ~= 2 then
         vim.notify("Please ensure you have exactly two windows open.", vim.log.levels.WARN)
         return
     end
+
     -- Function to run diffthis on the current window
     local function run_diffthis()
         vim.cmd('diffthis')
     end
-    -- Switch to the first window and run diffthis
+
+    -- Function to set diffput and diffget keymaps for the current buffer
+    local function set_diff_keymaps()
+        vim.keymap.set('n', '<leader>dp', '<cmd>diffput<CR>', { buffer = true, desc = "[D]iff [P]ut" })
+        vim.keymap.set('n', '<leader>dg', '<cmd>diffget<CR>', { buffer = true, desc = "[D]iff [G]et" })
+    end
+
+    -- Switch to the first window and set up
     vim.api.nvim_set_current_win(windows[1])
     run_diffthis()
-    -- Switch to the second window and run diffthis
+    set_diff_keymaps()
+
+    -- Switch to the second window and set up
     vim.api.nvim_set_current_win(windows[2])
     run_diffthis()
-    -- Optionally, you might want to focus back on the first window
+    set_diff_keymaps()
+
+    -- Optionally, focus back on the first window
     vim.api.nvim_set_current_win(windows[1])
 end, {desc="[D]iff [T]his"})
 

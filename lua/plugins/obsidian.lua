@@ -1,8 +1,13 @@
 return {
   {
     'oflisback/obsidian-bridge.nvim',
+    enabled =true,
     lazy = true,
     event = 'BufReadPre /Users/matthewscott/Obsidian/**.md',
+    -- keys = {
+    --   {'n', '<leader>os', desc ='[O]bsidian [S]ync'},
+    --   {'n', '<leader>ot',  '<cmd>ObsidianBridgeTelescopeCommand<cr>', desc ='[O]bsidian [T]elescope'},
+    -- },
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     config = function()
       require('obsidian-bridge').setup { scroll_sync = true }

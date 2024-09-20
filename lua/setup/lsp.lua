@@ -24,8 +24,6 @@ local on_attach = function(_, bufnr)
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
-
-
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
@@ -67,10 +65,19 @@ local servers = {
   julials = {},
   typst_lsp = {
     settings = {
-      exportPdf = "never",
+      exportPdf = 'never',
     },
   },
-  tsserver = {}
+  tsserver = {},
+  ltex = {
+    ltex = {
+      checkFrequency = 'save',
+      language = 'en',
+      disabledRules = {
+        ['en'] = { 'UPPERCASE_SENTENCE_START', 'GERMAN_QUOTES', 'EN_UNPAIRED_BRACKETS' },
+      },
+    },
+  },
 }
 
 -- Setup neovim lua configuration
@@ -96,5 +103,4 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
-
-require'lspconfig'.mojo.setup{}
+require('lspconfig').mojo.setup {}

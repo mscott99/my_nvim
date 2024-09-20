@@ -34,6 +34,7 @@ return function(is_math, not_math)
       { t("\\Delta^{${1:n}-1}$0") }
     ),
     s({ trig = "rng", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\range") }),
+    s({ trig = "idp", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\indep ")}),
     s({ trig = "its", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t(" \\bar{\\cap} ") }),
     s({ trig = "inn", condition = is_math, wordTrig=false, snippetType = "autosnippet" }, { t(" \\in ") }),
     s({ trig = "wt", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\subseteq ") }),

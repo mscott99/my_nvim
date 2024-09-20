@@ -245,10 +245,20 @@ return {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
+    enabled = false,
     config = function()
       vim.cmd.colorscheme 'gruvbox'
       vim.api.nvim_set_hl(0, 'SignColumn', { bg = require('gruvbox').palette.dark0 })
     end,
+  },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    config = function()
+      require('catppuccin').setup({flavour="mocha"})
+      vim.cmd.colorscheme 'catppuccin'
+    end,
+    priority = 1000,
   },
   {
     'folke/persistence.nvim',
