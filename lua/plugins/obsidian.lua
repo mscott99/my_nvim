@@ -37,17 +37,15 @@ return {
       " let g:vim_markdown_conceal = 2
       " let g:vim_markdown_math = 1
       map <Plug> <Plug>Markdown_Fold
-      nmap zc <Plug>Markdown_Fold
+      map [h <Plug>Markdown_MoveToCurHeader
+      map [u <Plug>Markdown_MoveToParentHeader
+      map zc <Plug>Markdown_Fold
+      map <leader>mi <cmd>HeaderIncrease<cr>
+      map <leader>md <cmd>HeaderDecrease<cr>
       " let g:vim_markdown_fenced_languages = ['julia=jl']
       ]]
     end,
     ft = 'markdown',
-    keys = {
-      { '[[', '<Plug>Markdown_MoveToPreviousHeader<CR>', desc = 'Previous [H]eader' },
-      { ']]', '<Plug>Markdown_MoveToNextHeader<CR>', desc = 'Next [H]eader' },
-      { '<leader>ih', "<cmd>'<,'>HeaderDecrease<cr>", mode = 'v', desc = '[I]ncrease [H]eader' },
-      { '<leader>lh', "<cmd>'<,'>HeaderIncrease<cr>", mode = 'v', desc = '[L]ower [H]eader' },
-    },
     -- event="BufEnter *.md"
   },
   {
