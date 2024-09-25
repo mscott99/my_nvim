@@ -11,6 +11,9 @@ local fmta = require('luasnip.extras.fmt').fmta
 local rep = require('luasnip.extras').rep
 
 local no_backslash = {
+  'psi',
+  'phi',
+  'eta',
   'ker',
   'cos',
   'sin',
@@ -51,6 +54,7 @@ local no_backslash = {
 }
 
 local backslash_functions = {
+  'diag',
   'aff',
   'span',
   'cone',

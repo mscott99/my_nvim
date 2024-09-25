@@ -4,6 +4,8 @@ local function setup_custom_conceals()
   vim.cmd [[
     syntax match texMathCmd '\\indep' conceal cchar=⊨
     syntax match texMathCmd '\\range' conceal cchar=ℛ
+    syntax match texMathCmd '\\rank' conceal cchar=r
+    syntax match texMathCmd '\\diag' conceal cchar=d
     syntax match texMathCmd '\\prod' conceal cchar=Π
     syntax match texMathCmd '\\prob' conceal cchar=P
     syntax match texMathCmd '\\proj' conceal cchar=Π
@@ -24,7 +26,7 @@ end
 vim.cmd [[
     let g:mkdp_preview_options = {
         \ 'mkit': {},
-        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}", "\\indep": "\perp\!\!\!\!\perp", },},
+        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}", "\\indep": "\perp\!\!\!\!\perp", "\\rank": "\\mathbb{rank}", "\\diag": "\\mathbb{diag}"},},
         \ 'uml': {},
         \ 'maid': {},
         \ 'disable_sync_scroll': 0,
