@@ -183,7 +183,7 @@ vim.keymap.set('n', '<leader>sc', function()
     use_regex = true,
   }
 end, { desc = '[S]earch [C]onfig File' })
-vim.keymap.set('n', '<leader>fk', require('telescope.builtin').keymaps , { desc = '[T]elescope [K]eymaps'})
+vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps , { desc = '[T]elescope [K]eymaps'})
 vim.keymap.set('n', '<leader>sg', function() require('telescope.builtin').live_grep({cwd = find_git_root(), use_regex= true,}) end, { desc = '[S]earch by [G]rep on Git Root of Current File' })
 vim.keymap.set('n', '<leader>sq', live_grep_qflist, {desc = '[S]earch [Q]uickfix list'})
 vim.keymap.set('n', '<leader>ff', function() require('telescope.builtin').find_files({cwd = find_git_root()}) end, { desc = '[F]ind [F]iles' })
