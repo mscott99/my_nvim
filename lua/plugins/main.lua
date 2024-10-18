@@ -9,13 +9,48 @@ return {
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
   {
+    'abecodes/tabout.nvim',
+    lazy = false,
+    config = function()
+      require('tabout').setup {
+        tabkey = '<Tab>', -- key to trigger tabout, set to an empty string to disable
+        backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
+        enable_backwards = false, -- well ...
+        completion = false, -- if the tabkey is used in a completion pum
+        tabouts = {
+          { open = "'", close = "'" },
+          { open = '"', close = '"' },
+          { open = '`', close = '`' },
+          { open = '(', close = ')' },
+          { open = '[', close = ']' },
+          { open = '{', close = '}' },
+        },
+        -- ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+        -- exclude = {}, -- tabout will ignore these filetypes
+      }
+    end,
+    -- opt = true, -- Set this to true if the plugin is optional
+    -- event = 'InsertCharPre', -- Set the event to 'InsertCharPre' for better compatibility
+    priority = 1000,
+  },
+  {
     'windwp/nvim-autopairs',
     enabled = true,
     -- ft = {"python", "lua", "julia"},
     event = 'InsertEnter',
     opts = {
-      disable_filetype = { 'markdown', 'latex', 'tex', 'TelescopePrompt' }, -- handled by luasnip.
+      -- disable_filetype = { 'markdown', 'latex', 'tex', 'TelescopePrompt' }, -- handled by luasnip.
+      ignored_next_char = [=[[%w%%%'%[%"%.%`]]=],
+      disable_filetype = { 'TelescopePrompt' }, -- handled by luasnip.
     },
+  },
+  -- Lua
+  {
+    'L3MON4D3/LuaSnip',
+    keys = function()
+      -- Disable default tab keybinding in LuaSnip
+      return {}
+    end,
   },
   {
     'benfowler/telescope-luasnip.nvim',
@@ -110,7 +145,6 @@ return {
   {
     'machakann/vim-sandwich',
     enabled = true,
-    event = 'VeryLazy',
     config = function()
       -- local personnal_maps = require("custom.configs.sandwich_recipes")
       -- vim.g['sandwich#recipes'] = vim.tbl_extend(vim.deepcopy(vim.g['sandwich#default_recipes']), personnal_maps)
@@ -138,6 +172,9 @@ return {
         nmap gsdb <Plug>(sandwich-delete-auto)
       ]]
       vim.cmd [[
+        let g:sandwich#timeout = 0
+        let g:textobj#sandwich#timeout = 0
+        let g:operator#sandwich#timeout = 0
         let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
         let g:sandwich#recipes += [{'buns': ['\left(', '\right)'], 'input':['P']}]
         let g:sandwich#recipes += [{'buns': ['\left[', '\right]'], 'input':['B']}]
@@ -217,6 +254,29 @@ return {
         map('n', '<leader>ghb', function()
           gs.blame_line { full = false }
         end, { desc = 'git blame line' })
+        vim.keymap.set('n', '<leader>gs', function()
+          local gs = require 'gitsigns'
+          local hunks = gs.get_hunks()
+          if #hunks == 0 then
+            print 'No hunks found in the current buffer'
+            return
+          end
+          local bufnr = vim.api.nvim_get_current_buf()
+          local bufname = vim.api.nvim_buf_get_name(bufnr)
+          local qf_items = {}
+          for _, hunk in ipairs(hunks) do
+            local start_line = hunk.added.start or hunk.removed.start
+            local text = vim.api.nvim_buf_get_lines(bufnr, start_line - 1, start_line, false)[1] or ''
+            table.insert(qf_items, {
+              filename = bufname,
+              lnum = start_line,
+              col = 1,
+              text = string.format('%s | %s', hunk.type, text:sub(1, 50)), -- Limit text to 50 characters
+            })
+          end
+          vim.fn.setqflist(qf_items, 'r')
+          vim.cmd 'cfirst'
+        end, { desc = '[G]et [S]igns' })
         -- map('n', '<leader>ghd', gs.diffthis, { desc = 'git diff against index' })
         -- map('n', '<leader>ghD', function()
         --   gs.diffthis '~'
@@ -255,7 +315,7 @@ return {
     'catppuccin/nvim',
     name = 'catppuccin',
     config = function()
-      require('catppuccin').setup({flavour="mocha"})
+      require('catppuccin').setup { flavour = 'mocha' }
       vim.cmd.colorscheme 'catppuccin'
     end,
     priority = 1000,

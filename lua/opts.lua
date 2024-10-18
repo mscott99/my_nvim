@@ -12,6 +12,7 @@ vim.cmd([[
       let g:vim_markdown_math = 1
       let g:vim_markdown_frontmatter = 1
       au BufRead,BufNewFile *.typ                set filetype=typst
+      set efm+=,%f\|%l\ col\ %c\|%m
       ]])
 
 

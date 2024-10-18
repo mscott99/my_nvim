@@ -24,9 +24,10 @@ return function(is_math, not_math)
     s({ condition = is_math, wordTrig=false,trig = "abs", snippetType = "autosnippet" }, fmta([[|<>|]], { d(1, get_visual) })),
     s({ condition = is_math, trig = "lr(",wordTrig=false, snippetType = "autosnippet" }, fmta([[\left(<>\right)]], { d(1, get_visual) })),
     s({ condition = is_math, trig = "lr[",wordTrig=false, snippetType = "autosnippet" }, fmta("\\left[<>\\right]", { d(1, get_visual) })),
-    s({ trig = "[", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("[<>]", { d(1, get_visual) })),
-    s({ trig = "{", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("{<>}", { d(1, get_visual) })),
-    s({ trig = "(", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("(<>)", { d(1, get_visual) })),
+    -- The issue with the below is when erasing a parenthesis it does not erase its matching partner.
+    -- s({condition=is_math, trig = "[", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("[<>]", { d(1, get_visual) })),
+    -- s({ condition=is_math,trig = "{", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("{<>}", { d(1, get_visual) })),
+    -- s({condition=is_math, trig = "(", wordTrig = false, priority = 200, snippetType = "autosnippet" }, fmta("(<>)", { d(1, get_visual) })),
     s(
       { condition = is_math, trig = "bra", snippetType = "autosnippet" },
       fmta("\\langle <>, <>\\rangle", { d(1, get_visual), i(2) })

@@ -35,8 +35,9 @@ vim.keymap.set('n', '<leader>dt', function()
 
   -- Function to set diffput and diffget keymaps for the current buffer
   local function set_diff_keymaps()
-    vim.keymap.set('n', '<leader>dp', '<cmd>diffput<CR>', { buffer = true, desc = '[D]iff [P]ut' })
-    vim.keymap.set('n', '<leader>dg', '<cmd>diffget<CR>', { buffer = true, desc = '[D]iff [G]et' })
+    -- check whether the keymap is set 
+    vim.keymap.set('n', '<leader>gdp', '<cmd>diffput<CR>', { buffer = true, desc = '[D]iff [P]ut' })
+    vim.keymap.set('n', '<leader>gdg', '<cmd>diffget<CR>', { buffer = true, desc = '[D]iff [G]et' })
   end
 
   -- Switch to the first window and set up
@@ -52,6 +53,9 @@ vim.keymap.set('n', '<leader>dt', function()
   -- Optionally, focus back on the first window
   vim.api.nvim_set_current_win(windows[1])
 end, { desc = '[D]iff [T]his' })
+
+-- Load saved quickfix lists
+vim.cmd [[command! -nargs=1 -complete=file Cqf cfile ++efm=%f\|%l\ col\ %c\|%m <args>]]
 
 vim.keymap.set('n', '<leader>ghd', '<cmd>:Gdiffsplit :1 | Gvdiffsplit!<cr>', { desc = 'Diff merge conflict' })
 vim.keymap.set('n', '<leader>ghgb', '<cmd>diffget //1<cr>', { desc = 'Diff get base' })
@@ -95,7 +99,6 @@ vim.keymap.set('o', 'gis', 'is', { desc = '[A]round [S]entence' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>em', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 vim.keymap.set('n', '<leader>ep', '<cmd>Oil<CR>', { desc = '[E]x[P]lore' })
 
 vim.keymap.set('n', '<leader>cf', '<cmd>Format<CR>', { desc = '[C]ode [F]ormat' })
@@ -195,6 +198,11 @@ vim.keymap.set('x', '<leader>p', [["_dP]])
 vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
 vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
+vim.keymap.set({ 'n', 'v' }, '<leader>D', [["_D]])
+vim.keymap.set({ 'n', 'v' }, '<leader>x', [["_x]])
+vim.keymap.set({ 'n', 'v' }, '<leader>X', [["_X]])
+vim.keymap.set({ 'n', 'v' }, '<leader>c', [["_c]])
+vim.keymap.set({ 'n', 'v' }, '<leader>C', [["_C]])
 
 vim.api.nvim_set_keymap('x', 'J', 'J', { noremap = true, silent = true })
 vim.keymap.set('v', 'J', 'mzJ`z')

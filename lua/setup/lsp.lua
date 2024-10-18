@@ -74,7 +74,7 @@ local servers = {
       checkFrequency = 'save',
       language = 'en',
       disabledRules = {
-        ['en'] = { 'UPPERCASE_SENTENCE_START', 'GERMAN_QUOTES', 'EN_UNPAIRED_BRACKETS' },
+        ['en'] = { 'UPPERCASE_SENTENCE_START', 'GERMAN_QUOTES', 'EN_UNPAIRED_BRACKETS', 'UNLIKELY_OPENING_PUNCTUATION', 'COMMA_PARENTHESIS_WHITESPACE' },
       },
     },
   },
