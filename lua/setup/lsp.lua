@@ -71,10 +71,18 @@ local servers = {
   tsserver = {},
   ltex = {
     ltex = {
+      enabled = true,
       checkFrequency = 'save',
-      language = 'en',
+      language = 'en-US',
+      dictionary = {
+        ['en-US'] = {'preconditioner', 'Longform', 'Zotero', 'url', 'TODO', 'coherences', 'HardTanh', 'MaxPool', 'piecewise-linear', 'subsampled', 'neurips', 'piecewise', 'Piecewise', 'sqrt', 'txt', 'std', 'De-biasing', 'de-biased', 'monotonicity', 'Monotonicity', 'Yilmaz', 'Christoffel', 'isometries', 'orthogonalization', 'ReLU', 'logarithmically', 'Adcock', 'pseudoinverse', 'iff', 'orthant'},
+      },
+      additionalRules = {
+        enablePickyRules = true, -- only at the end
+        languageModel = "/Users/matthewscott/.config/my_nvim/data/ngrams/",
+      },
       disabledRules = {
-        ['en'] = { 'UPPERCASE_SENTENCE_START', 'GERMAN_QUOTES', 'EN_UNPAIRED_BRACKETS', 'UNLIKELY_OPENING_PUNCTUATION', 'COMMA_PARENTHESIS_WHITESPACE' },
+        ['en-US'] = { 'UPPERCASE_SENTENCE_START', 'GERMAN_QUOTES', 'EN_UNPAIRED_BRACKETS', 'UNLIKELY_OPENING_PUNCTUATION', 'COMMA_PARENTHESIS_WHITESPACE', 'EN_A_VS_AN', 'EN_QUOTES', 'CONFUSION_RULE_BOUND_BOND', 'TOO_LONG_SENTENCE', 'SO_AS_TO', 'PUNCTUATION_PARAGRAPH_END', 'CONSEQUENCES_OF_FOR'},
       },
     },
   },

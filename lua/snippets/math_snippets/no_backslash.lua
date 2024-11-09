@@ -67,6 +67,8 @@ local no_backslash_add_space = {
   'cap',
   'cup',
   'll',
+  'land',
+  'lor',
   'implies',
   'times',
   'quad',

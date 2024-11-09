@@ -21,6 +21,7 @@ local function setup_custom_conceals()
     syntax match texMathCmd '\\boldsymbol{e}' conceal cchar=𝐞
     syntax match texMathCmd '\\bar{\\cap}' conceal cchar=⩃
     syntax match texMathCmd '\\indicator' conceal cchar=𝟙
+    syntax match texMathCmd '\\allone' conceal cchar=𝟙
 
     syntax match texMathCmd '\\boldsymbol{a}' conceal cchar=𝒂
     syntax match texMathCmd '\\boldsymbol{b}' conceal cchar=𝒃
@@ -116,7 +117,7 @@ end
 vim.cmd [[
     let g:mkdp_preview_options = {
         \ 'mkit': {},
-        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\Span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}", "\\indep": "\perp\!\!\!\!\perp", "\\rank": "\\mathbb{rank}", "\\diag": "\\mathbb{diag}", "\\Diag":"\\mathbb{Diag}", "\\interior":"\\mathbb{int}", "\\measfield": "\\mathbb{C}", "\\field": "\\mathbb{R}"},},
+        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\allone": "\\mathbb{1}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\Span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}", "\\indep": "\perp\!\!\!\!\perp", "\\rank": "\\mathbb{rank}", "\\diag": "\\mathbb{diag}", "\\Diag":"\\mathbb{Diag}", "\\interior":"\\mathbb{int}", "\\measfield": "\\mathbb{C}", "\\field": "\\mathbb{R}"},},
         \ 'uml': {},
         \ 'maid': {},
         \ 'disable_sync_scroll': 0,

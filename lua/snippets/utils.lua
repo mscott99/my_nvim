@@ -1,8 +1,49 @@
 local M = {}
-local ts = require("vim.treesitter")
-local ls = require("luasnip")
+local ts = require 'vim.treesitter'
+local ls = require 'luasnip'
 local sn = ls.snippet_node
 local i = ls.insert_node
+
+-- Get the index of the preceding latex block.
+M.match_latex = function(line, pos)
+  local stack = {}
+  -- local close = { ['}'] = true, ['%)'] = true, ['%]'] = true, ['\\}'] = true }
+  -- local match = { ['}'] = '{', ['%)'] = '%(', ['%]'] = '%[', ['\\}'] = '\\{' }
+  local close = {["}"] = true, ["%)"] = true, ["%]"] = true, ["\\right%)"] = true, ["\\right%]"] = true, ["\\right\\}"] = true, ["\\right|"] = true, ["\\right\\|"] = true, ["\\right\\rangle"] = true, ["\\right\\rceil"] = true, ["\\right\\rfloor"] = true, ["\\right\\rrbracket"] = true, ["\\}"] = true, ["\\|"] = true, ["\\rangle"] = true, ["\\rceil"] = true, ["\\rfloor"] = true, ["\\rrbracket"] = true, ["\\rvert"] = true, ["\\rVert"] = true}
+  local match = {["}"] = "{", ["%)"] = "%(", ["%]"] = "%[", ["\\right%)"] = "\\left%(", ["\\right%]"] = "\\left%[", ["\\right\\}"] = "\\left\\{", ["\\right|"] = "\\left|", ["\\right\\|"] = "\\left\\|", ["\\right\\rangle"] = "\\left\\langle", ["\\right\\rceil"] = "\\left\\lceil", ["\\right\\rfloor"] = "\\left\\lfloor", ["\\right\\rrbracket"] = "\\left\\llbracket", ["\\}"] = "\\{", ["\\|"] = "\\|", ["\\rangle"] = "\\langle", ["\\rceil"] = "\\lceil", ["\\rfloor"] = "\\lfloor", ["\\rrbracket"] = "\\llbracket", ["\\rvert"] = "\\lvert", ["\\rVert"] = "\\lVert"}
+  for i = pos, 1, -1 do
+    local preceding_str = line:sub(1, i)
+    print('prec_str: ' .. preceding_str)
+    if #stack >= 1 then
+      local opening_match = match[stack[#stack]] .. '$'
+      print('op_match: ' .. opening_match)
+      if preceding_str:match(opening_match) ~= nil then
+        local removed = table.remove(stack)
+        print('removed: ' .. removed)
+        i = i - #removed + 1 -- will be decremented
+        goto continue
+      end
+    end
+    for closing, _ in pairs(close) do
+      if preceding_str:match(closing .. '$') then
+        print('Inserting: ' .. closing)
+        table.insert(stack, closing)
+        i = i - #closing + 1 -- will be decremented
+        print('new i: ' .. i)
+        goto continue
+      end
+    end
+    if #stack == 0 and (preceding_str == '' or preceding_str:match '[%s$]$' ~= nil) then
+      return i
+    end
+    if #stack ~= 0 and (preceding_str:sub(-1) == nil or preceding_str:sub(-1) == "" or preceding_str:sub(-1) == '$') then
+      vim.notify('Invalid LaTeX syntax: unmatched brackets.', vim.log.levels.WARN)
+      return
+    end
+    ::continue::
+  end
+  print 'loop ended'
+end
 
 function M.get_visual(_, parent) -- use with dynamic node d(1, get_visual)
   if #parent.snippet.env.LS_SELECT_RAW > 0 then
@@ -14,7 +55,7 @@ end
 
 -- Make function grab the code on the previous line
 -- We do this to automate copy-pasting in align environments in latex
-  -- Do not include the first word starting with &, and do not include the last "\\" at the end of the line.
+-- Do not include the first word starting with &, and do not include the last "\\" at the end of the line.
 -- check that the previous line is not the start of the align environment
 
 function M.get_prev_align_line(_, _)
@@ -23,24 +64,24 @@ function M.get_prev_align_line(_, _)
   local line = vim.api.nvim_buf_get_lines(buf, row, row + 1, false)[1]
 
   -- Check if the line is the start of the align or align* environment
-  if line:match("\\begin{align%*?}") then
-    return sn(nil, i(1, ""))
+  if line:match '\\begin{align%*?}' then
+    return sn(nil, i(1, ''))
   end
 
-  local start, stop = 1, #line  -- Initialize stop at the end of the line
+  local start, stop = 1, #line -- Initialize stop at the end of the line
 
   -- Update start if line starts with '&'
-  local ampersand_pos = line:find("&")
+  local ampersand_pos = line:find '&'
   if ampersand_pos then
     -- Find the end of the first word/command after '&'
-    local command_end = line:find("%s", ampersand_pos)
+    local command_end = line:find('%s', ampersand_pos)
     if command_end then
       start = command_end + 1
     end
   end
 
   -- Update stop if line ends with '\\'
-  local backslash_pos = line:find("\\\\%s*$")
+  local backslash_pos = line:find '\\\\%s*$'
   if backslash_pos then
     stop = backslash_pos - 1
   end
@@ -48,7 +89,6 @@ function M.get_prev_align_line(_, _)
   local code = line:sub(start, stop)
   return sn(nil, i(1, code))
 end
-
 
 function M.map(tbl, f)
   local t = {}
@@ -66,11 +106,11 @@ function M.concat(tables)
   return v
 end
 
-function M.tableConcat(t1,t2)
-    for j=1,#t2 do
-        t1[#t1+1] = t2[j]
-    end
-    return t1
+function M.tableConcat(t1, t2)
+  for j = 1, #t2 do
+    t1[#t1 + 1] = t2[j]
+  end
+  return t1
 end
 
 function M.doubleMap(first, second, fn)
@@ -92,14 +132,14 @@ local function check_in_mathzone()
   local parser = ts.get_parser(buf)
   parser:parse(true)
   if
-    parser:children()["markdown_inline"] ~= nil
-    and parser:children()["markdown_inline"]:children()["latex"] ~= nil
-    and parser:children()["markdown_inline"]:children()["latex"]:contains({ row, col-1, row, col })
+    parser:children()['markdown_inline'] ~= nil
+    and parser:children()['markdown_inline']:children()['latex'] ~= nil
+    and parser:children()['markdown_inline']:children()['latex']:contains { row, col - 1, row, col }
   then
-    print("in mathzone")
+    print 'in mathzone'
     return true
   else
-    print("not in mathzone")
+    print 'not in mathzone'
     return false
   end
 end
@@ -122,68 +162,68 @@ end
 --
 
 M.greek_letters = {
-  "alpha",
-  "Alpha",
-  "beta",
-  "Beta",
-  "delta",
-  "Delta",
-  "psi",
-  "Psi",
-  "xi",
-  "Xi",
-  "Epsilon",
-  "gamma",
-  "Gamma",
-  "iota",
-  "Iota",
-  "kappa",
-  "Kappa",
-  "lambda",
-  "Lambda",
-  "mu",
-  "Mu",
-  "nu",
-  "Nu",
-  "omega",
-  "Omega",
-  "phi",
-  "Phi",
-  "pi",
-  "Pi",
-  "rho",
-  "Rho",
-  "sigma",
-  "Sigma",
-  "theta",
-  "Theta",
-  "tau",
-  "Tau",
-  "zeta",
-  "Zeta",
-  "Eta",
-  "nabla",
-  "Nabla",
-  "chi",
-  "Chi",
+  'alpha',
+  'Alpha',
+  'beta',
+  'Beta',
+  'delta',
+  'Delta',
+  'psi',
+  'Psi',
+  'xi',
+  'Xi',
+  'Epsilon',
+  'gamma',
+  'Gamma',
+  'iota',
+  'Iota',
+  'kappa',
+  'Kappa',
+  'lambda',
+  'Lambda',
+  'mu',
+  'Mu',
+  'nu',
+  'Nu',
+  'omega',
+  'Omega',
+  'phi',
+  'Phi',
+  'pi',
+  'Pi',
+  'rho',
+  'Rho',
+  'sigma',
+  'Sigma',
+  'theta',
+  'Theta',
+  'tau',
+  'Tau',
+  'zeta',
+  'Zeta',
+  'Eta',
+  'nabla',
+  'Nabla',
+  'chi',
+  'Chi',
 }
 
 M.short_greek = {
-  "nu",
-  "Nu",
-  "pi",
-  "Pi",
-  "mu",
-  "Mu",
-  "eta", 
-  "Eta"
-} 
-
-local others = {
-  "varepsilon",
+  'nu',
+  'Nu',
+  'pi',
+  'Pi',
+  'mu',
+  'Mu',
+  'eta',
+  'Eta',
 }
 
-M.redundant_starting_greeks = M.concat({M.greek_letters, others, M.short_greek})
+local others = {
+  'varepsilon',
+}
+
+M.redundant_starting_greeks = M.concat { M.greek_letters, others, M.short_greek }
 
 function M.in_markdown_mathzone()
   return check_in_mathzone()
@@ -196,11 +236,11 @@ function M.not_in_markdown_mathzone()
 end
 
 function M.in_tex_mathzone()
-  return vim.fn["vimtex#syntax#in_mathzone"]() == 1
+  return vim.fn['vimtex#syntax#in_mathzone']() == 1
 end
 
 function M.not_in_tex_mathzone()
-  return not vim.fn["vimtex#syntax#in_mathzone"]() == 1
+  return not vim.fn['vimtex#syntax#in_mathzone']() == 1
 end
 
 return M

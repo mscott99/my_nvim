@@ -55,7 +55,19 @@ vim.keymap.set('n', '<leader>dt', function()
 end, { desc = '[D]iff [T]his' })
 
 -- Load saved quickfix lists
-vim.cmd [[command! -nargs=1 -complete=file Cqf cfile ++efm=%f\|%l\ col\ %c\|%m <args>]]
+function AddCurrentFileToQF()
+    local current_file = vim.fn.expand('%:p')
+    local current_line = vim.fn.line('.')
+    local qf_list = vim.fn.getqflist()
+    local new_entry = {
+        filename = current_file,
+        lnum = current_line,
+        text = current_file,
+    }
+    table.insert(qf_list, new_entry)
+    vim.fn.setqflist(qf_list, 'r')
+end
+vim.keymap.set('n', '<leader>qa', AddCurrentFileToQF, { desc = '[Q]uickfix [A]dd' })
 
 vim.keymap.set('n', '<leader>ghd', '<cmd>:Gdiffsplit :1 | Gvdiffsplit!<cr>', { desc = 'Diff merge conflict' })
 vim.keymap.set('n', '<leader>ghgb', '<cmd>diffget //1<cr>', { desc = 'Diff get base' })
@@ -197,12 +209,12 @@ vim.keymap.set({ 'n', 'x', 'v' }, '<Cmd-f>', '<cmd>silent !tmux neww tmux-sessio
 vim.keymap.set('x', '<leader>p', [["_dP]])
 vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
-vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
-vim.keymap.set({ 'n', 'v' }, '<leader>D', [["_D]])
-vim.keymap.set({ 'n', 'v' }, '<leader>x', [["_x]])
-vim.keymap.set({ 'n', 'v' }, '<leader>X', [["_X]])
-vim.keymap.set({ 'n', 'v' }, '<leader>c', [["_c]])
-vim.keymap.set({ 'n', 'v' }, '<leader>C', [["_C]])
+vim.keymap.set({ 'n', 'v' }, '<leader>nd', [["_d]])
+vim.keymap.set({ 'n', 'v' }, '<leader>nD', [["_D]])
+vim.keymap.set({ 'n', 'v' }, '<leader>nx', [["_x]])
+vim.keymap.set({ 'n', 'v' }, '<leader>nX', [["_X]])
+vim.keymap.set({ 'n', 'v' }, '<leader>nc', [["_c]])
+vim.keymap.set({ 'n', 'v' }, '<leader>nC', [["_C]])
 
 vim.api.nvim_set_keymap('x', 'J', 'J', { noremap = true, silent = true })
 vim.keymap.set('v', 'J', 'mzJ`z')

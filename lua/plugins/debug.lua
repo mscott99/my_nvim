@@ -9,6 +9,7 @@
 return {
   {
     'mxsdev/nvim-dap-vscode-js',
+    lazy=true,
     dependencies = { 'microsoft/vscode-js-debug' },
     opts = { adapters = { 'pwa-node' }, debugger_path = '/Users/matthewscott/.local/share/my_nvim/lazy/vscode-js-debug' },
     -- do not clean, built manually.
@@ -24,7 +25,7 @@ return {
     -- NOTE: Yes, you can install new plugins here!
 
     'mfussenegger/nvim-dap',
-    lazy = false,
+    lazy = true,
     -- NOTE: And you can specify dependencies as well
     dependencies = {
       -- Creates a beautiful debugger UI
