@@ -10,7 +10,7 @@ local fmt = require('luasnip.extras.fmt').fmt
 local fmta = require('luasnip.extras.fmt').fmta
 local rep = require('luasnip.extras').rep
 local get_visual = require('snippets.utils').get_visual
-local match_latex = require('snippets.utils').match_latex
+local loose_grab = require('snippets.utils').loose_grab
 
 return function(is_math, not_math)
   return {
@@ -41,15 +41,7 @@ return function(is_math, not_math)
     ]],
         {
           f(function(args, snip)
-            local pos = vim.api.nvim_win_get_cursor(0)
-            local line = vim.api.nvim_buf_get_lines(0, pos[1] - 1, pos[1], false)[1]
-            local cursor_pos = pos[2]
-            local match_start = match_latex(line, cursor_pos)
-            local match_content = line:sub(match_start+1, cursor_pos)
-            print(cursor_pos)
-            vim.api.nvim_buf_set_text(0, pos[1] - 1, match_start, pos[1]-1, cursor_pos, { '' })
-            -- Return the matched text
-            return match_content
+              return loose_grab()
           end, {}),
           i(1), -- The denominator will be inserted here
         }

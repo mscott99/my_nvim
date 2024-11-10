@@ -83,7 +83,6 @@ return {
           end
           vim.b.repl_created = true
         end
-        print("hi")
         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>SlimeRegionSend', true, true, true), 'n')
       end)
     end,

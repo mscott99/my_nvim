@@ -13,6 +13,7 @@ local greek_letters = require("snippets.utils").redundant_starting_greeks
 local concat = require("snippets.utils").concat
 local doubleMap = require("snippets.utils").doubleMap
 local map = require("snippets.utils").map
+local strict_grab = require("snippets.utils").strict_grab
 
 local hats = {
   {
@@ -65,7 +66,7 @@ local hats = {
   },
 }
 
-word_snippets = {
+local word_snippets = {
   {
     trig = "rm",
     tex = "mathrm",
@@ -75,8 +76,8 @@ word_snippets = {
 return function(is_math, not_math)
   local function make_letter_hat_snippet(hat)
     return s({
-      trig = "(%a)" .. hat.trig,
-      regTrig = true,
+      trig = hat.trig,
+      regTrig = false,
       wordTrig = false,
       --TODO: make another snippet that includes everything up to space
       name = "letter_".. hat.tex,
@@ -84,7 +85,8 @@ return function(is_math, not_math)
       condition = is_math,
       snippetType = "autosnippet",
     }, { f(function(_, snip)
-        return "\\" .. hat.tex .. "{" .. snip.captures[1] .. "}"
+        local content = strict_grab()
+        return "\\" .. hat.tex .. "{" .. content .. "}"
       end) })
   end
 

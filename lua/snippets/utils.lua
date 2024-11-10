@@ -5,44 +5,106 @@ local sn = ls.snippet_node
 local i = ls.insert_node
 
 -- Get the index of the preceding latex block.
-M.match_latex = function(line, pos)
+local match_latex = function(line, pos, break_pattern)
   local stack = {}
   -- local close = { ['}'] = true, ['%)'] = true, ['%]'] = true, ['\\}'] = true }
   -- local match = { ['}'] = '{', ['%)'] = '%(', ['%]'] = '%[', ['\\}'] = '\\{' }
-  local close = {["}"] = true, ["%)"] = true, ["%]"] = true, ["\\right%)"] = true, ["\\right%]"] = true, ["\\right\\}"] = true, ["\\right|"] = true, ["\\right\\|"] = true, ["\\right\\rangle"] = true, ["\\right\\rceil"] = true, ["\\right\\rfloor"] = true, ["\\right\\rrbracket"] = true, ["\\}"] = true, ["\\|"] = true, ["\\rangle"] = true, ["\\rceil"] = true, ["\\rfloor"] = true, ["\\rrbracket"] = true, ["\\rvert"] = true, ["\\rVert"] = true}
-  local match = {["}"] = "{", ["%)"] = "%(", ["%]"] = "%[", ["\\right%)"] = "\\left%(", ["\\right%]"] = "\\left%[", ["\\right\\}"] = "\\left\\{", ["\\right|"] = "\\left|", ["\\right\\|"] = "\\left\\|", ["\\right\\rangle"] = "\\left\\langle", ["\\right\\rceil"] = "\\left\\lceil", ["\\right\\rfloor"] = "\\left\\lfloor", ["\\right\\rrbracket"] = "\\left\\llbracket", ["\\}"] = "\\{", ["\\|"] = "\\|", ["\\rangle"] = "\\langle", ["\\rceil"] = "\\lceil", ["\\rfloor"] = "\\lfloor", ["\\rrbracket"] = "\\llbracket", ["\\rvert"] = "\\lvert", ["\\rVert"] = "\\lVert"}
+  local close = {
+    ['}'] = true,
+    ['%)'] = true,
+    ['%]'] = true,
+    ['\\right%)'] = true,
+    ['\\right%]'] = true,
+    ['\\right\\}'] = true,
+    ['\\right|'] = true,
+    ['\\right\\|'] = true,
+    ['\\right\\rangle'] = true,
+    ['\\right\\rceil'] = true,
+    ['\\right\\rfloor'] = true,
+    ['\\right\\rrbracket'] = true,
+    ['\\}'] = true,
+    ['\\|'] = true,
+    ['\\rangle'] = true,
+    ['\\rceil'] = true,
+    ['\\rfloor'] = true,
+    ['\\rrbracket'] = true,
+    ['\\rvert'] = true,
+    ['\\rVert'] = true,
+  }
+  local match = {
+    ['}'] = '{',
+    ['%)'] = '%(',
+    ['%]'] = '%[',
+    ['\\right%)'] = '\\left%(',
+    ['\\right%]'] = '\\left%[',
+    ['\\right\\}'] = '\\left\\{',
+    ['\\right|'] = '\\left|',
+    ['\\right\\|'] = '\\left\\|',
+    ['\\right\\rangle'] = '\\left\\langle',
+    ['\\right\\rceil'] = '\\left\\lceil',
+    ['\\right\\rfloor'] = '\\left\\lfloor',
+    ['\\right\\rrbracket'] = '\\left\\llbracket',
+    ['\\}'] = '\\{',
+    ['\\|'] = '\\|',
+    ['\\rangle'] = '\\langle',
+    ['\\rceil'] = '\\lceil',
+    ['\\rfloor'] = '\\lfloor',
+    ['\\rrbracket'] = '\\llbracket',
+    ['\\rvert'] = '\\lvert',
+    ['\\rVert'] = '\\lVert',
+  }
+  local first_letter = true
   for i = pos, 1, -1 do
     local preceding_str = line:sub(1, i)
-    print('prec_str: ' .. preceding_str)
     if #stack >= 1 then
       local opening_match = match[stack[#stack]] .. '$'
-      print('op_match: ' .. opening_match)
       if preceding_str:match(opening_match) ~= nil then
         local removed = table.remove(stack)
-        print('removed: ' .. removed)
         i = i - #removed + 1 -- will be decremented
         goto continue
       end
     end
     for closing, _ in pairs(close) do
       if preceding_str:match(closing .. '$') then
-        print('Inserting: ' .. closing)
         table.insert(stack, closing)
         i = i - #closing + 1 -- will be decremented
-        print('new i: ' .. i)
         goto continue
       end
     end
-    if #stack == 0 and (preceding_str == '' or preceding_str:match '[%s$]$' ~= nil) then
+    if #stack == 0 and not first_letter and (preceding_str == '' or preceding_str:match(break_pattern) ~= nil) then
       return i
     end
-    if #stack ~= 0 and (preceding_str:sub(-1) == nil or preceding_str:sub(-1) == "" or preceding_str:sub(-1) == '$') then
+    if #stack ~= 0 and (preceding_str:sub(-1) == nil or preceding_str:sub(-1) == '' or preceding_str:sub(-1) == '$') then
       vim.notify('Invalid LaTeX syntax: unmatched brackets.', vim.log.levels.WARN)
-      return
+      return pos
     end
     ::continue::
+    first_letter = false
   end
-  print 'loop ended'
+  return pos
+end
+
+M.grab_latex_at_cursor = function(break_pattern)
+  local pos = vim.api.nvim_win_get_cursor(0)
+  local line = vim.api.nvim_buf_get_lines(0, pos[1] - 1, pos[1], false)[1]
+  local match_start = match_latex(line, pos[2], break_pattern)
+  local match_content = line:sub(match_start + 1, pos[2])
+  if match_content ~= nil then
+    vim.api.nvim_buf_set_text(0, pos[1] - 1, match_start, pos[1] - 1, pos[2], { '' })
+  else
+    vim.notify 'Could not get the latex content'
+    return nil
+  end
+  -- Return the matched text
+  return match_content
+end
+
+M.loose_grab = function()
+  return M.grab_latex_at_cursor "[%s${%[%($]$"
+end
+
+M.strict_grab = function()
+  return M.grab_latex_at_cursor "[%s${}%[%]%(%)%]_]$"
 end
 
 function M.get_visual(_, parent) -- use with dynamic node d(1, get_visual)
@@ -136,10 +198,8 @@ local function check_in_mathzone()
     and parser:children()['markdown_inline']:children()['latex'] ~= nil
     and parser:children()['markdown_inline']:children()['latex']:contains { row, col - 1, row, col }
   then
-    print 'in mathzone'
     return true
   else
-    print 'not in mathzone'
     return false
   end
 end
