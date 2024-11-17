@@ -45,10 +45,6 @@ local hats = {
     tex = "mathbb",
   },
   {
-    trig = "br",
-    tex = "mathbr",
-  },
-  {
     trig = "bs",
     tex = "boldsymbol",
   },

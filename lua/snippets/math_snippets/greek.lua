@@ -69,7 +69,7 @@ return function(is_math, not_math)
       condition = is_math,
       snippetType = 'autosnippet',
     }, { t '\\varepsilon' }),
-    s({ name = 'ell', trig = ';ll', wordTrig = false, condition = is_math, snippetType = 'autosnippet', priority = 400 }, { t '\\ell' }),
+    s({ name = 'ell', trig = ';el', wordTrig = false, condition = is_math, snippetType = 'autosnippet', priority = 400 }, { t '\\ell' }),
   })
   return letter_snippets
 end

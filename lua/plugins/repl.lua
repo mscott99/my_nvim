@@ -68,8 +68,8 @@ return {
       vim.keymap.set('n', '<c-c><c-c>', function()
         if vim.b.repl_created == nil then
           if vim.bo.filetype == 'python' then
-            vim.cmd [[SlimeSend1 conda activate torch
-              SlimeSend1 IPython --no-autoindent --matplotlib]]
+            vim.cmd [[SlimeSend1 source ./venv/bin/activate
+            SlimeSend1 IPython --no-autoindent --matplotlib]]
           end
           vim.b.repl_created = true
         end
