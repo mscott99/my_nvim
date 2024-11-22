@@ -73,7 +73,7 @@ return {
           end
           vim.b.repl_created = true
         end
-        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('{<Plug>SlimeMotionSend}}}{j', true, true, true), 'n')
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes(':keepjumps normal! {<cr><Plug>SlimeMotionSend}:keepjumps normal! }}{j<cr>', true, true, true), 'n')
       end)
       vim.keymap.set('v', '<c-c><c-c>', function()
         if vim.b.repl_created == nil then

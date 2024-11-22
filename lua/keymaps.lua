@@ -5,6 +5,7 @@
 
 local all_wrapped = nil
 
+
 local function toggle_wrap_mode()
   local windows = vim.api.nvim_list_wins()
   local wrap_state = all_wrapped == nil or not all_wrapped
@@ -116,14 +117,6 @@ vim.keymap.set('n', '<leader>ep', '<cmd>Oil<CR>', { desc = '[E]x[P]lore' })
 vim.keymap.set('n', '<leader>cf', '<cmd>Format<CR>', { desc = '[C]ode [F]ormat' })
 
 vim.keymap.set('n', '<leader>qs', [[<cmd>lua require("persistence").load()<cr>]], {})
-
-vim.keymap.set(
-  'n',
-  '<leader>cc',
-  [[<cmd>edit oil-ssh://cc///home/mscott99/projects/def-oyilmaz/mscott99
-<CR>]],
-  { desc = '[C]ompute [C]an' }
-)
 
 -- Window navigation
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Go to left window' })

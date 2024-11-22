@@ -95,6 +95,7 @@ return {
     cmd = { 'Oil' },
     opts = {
       default_file_explorer = true,
+      delete_to_trash = true,
     },
     lazy = false,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
