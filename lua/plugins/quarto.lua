@@ -8,7 +8,8 @@ return {
   },
   {
     'quarto-dev/quarto-nvim',
-    event="VeryLazy",
+    lazy=true,
+    event="BufEnter *.qmd",
     dev = false,
     dependencies = {
       {

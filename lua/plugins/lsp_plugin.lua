@@ -1,24 +1,41 @@
 return {
   {
     'nvim-neotest/neotest-jest',
+    enabled = false,
     commit = '0e6e77c',
   },
   {
+    'neotest-python',
+    lazy = false,
+    enabled = true,
+  },
+  {
     'nvim-neotest/neotest',
-    dependencies = { 'nvim-neotest/neotest-python', 'nvim-neotest/neotest-jest' },
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
     config = function()
       require('neotest').setup {
+        discovery = { enabled = false },
         adapters = {
-          require 'neotest-python',
-          require 'neotest-jest' {
-            jestCommand = require('neotest-jest.jest-util').getJestCommand(vim.fn.expand '%:p:h'),
-            jestConfigFile = 'custom.jest.config.ts',
-            jest_test_discovery = true,
-            env = { CI = true },
-            cwd = function(path)
-              return vim.fn.getcwd()
-            end,
+          require 'neotest-python' {
+            runner = 'pytest',
+            python = './venv/bin/python',
+            dap = { justMyCode = true },
+            pytest_discover_instances = true,
           },
+          -- require 'neotest-jest' {
+          --   jestCommand = require('neotest-jest.jest-util').getJestCommand(vim.fn.expand '%:p:h'),
+          --   jestConfigFile = 'custom.jest.config.ts',
+          --   jest_test_discovery = false,
+          --   env = { CI = true },
+          --   cwd = function(path)
+          --     return vim.fn.getcwd()
+          --   end,
+          -- },
         },
       }
     end,
@@ -42,8 +59,20 @@ return {
         sh = { 'shellcheck' },
         tex = { 'latexindent' },
         bib = { 'latexindent' },
+        -- markdown = { 'prettier' },
         typescript = { 'prettier' },
-        python = {'autopep8'}
+        python = { 'autopep8' },
+      },
+      formatters = {
+        -- prettier = {
+        --   command = 'prettier',
+        --   args = {
+        --     '--parser=markdown',
+        --     '--prose-wrap=always',
+        --     '--print-width=80',
+        --   },
+        --   stdin = true,
+        -- },
       },
     },
     keys = { '<leader>cf' },

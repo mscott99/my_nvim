@@ -3,8 +3,13 @@
 --
 -- See `:help vim.keymap.set()`
 
-local all_wrapped = nil
+-- Function to enhance numbered jumps
+-- Function to enhance numbered jumps
 
+vim.cmd [[nnoremap <expr> j (v:count > 0 ? "m'" . v:count : '') . 'j'
+nnoremap <expr> k (v:count > 0 ? "m'" . v:count : '') . 'k']]
+
+local all_wrapped = nil
 
 local function toggle_wrap_mode()
   local windows = vim.api.nvim_list_wins()
@@ -36,7 +41,7 @@ vim.keymap.set('n', '<leader>dt', function()
 
   -- Function to set diffput and diffget keymaps for the current buffer
   local function set_diff_keymaps()
-    -- check whether the keymap is set 
+    -- check whether the keymap is set
     vim.keymap.set('n', '<leader>gdp', '<cmd>diffput<CR>', { buffer = true, desc = '[D]iff [P]ut' })
     vim.keymap.set('n', '<leader>gdg', '<cmd>diffget<CR>', { buffer = true, desc = '[D]iff [G]et' })
   end
@@ -57,16 +62,16 @@ end, { desc = '[D]iff [T]his' })
 
 -- Load saved quickfix lists
 function AddCurrentFileToQF()
-    local current_file = vim.fn.expand('%:p')
-    local current_line = vim.fn.line('.')
-    local qf_list = vim.fn.getqflist()
-    local new_entry = {
-        filename = current_file,
-        lnum = current_line,
-        text = current_file,
-    }
-    table.insert(qf_list, new_entry)
-    vim.fn.setqflist(qf_list, 'r')
+  local current_file = vim.fn.expand '%:p'
+  local current_line = vim.fn.line '.'
+  local qf_list = vim.fn.getqflist()
+  local new_entry = {
+    filename = current_file,
+    lnum = current_line,
+    text = current_file,
+  }
+  table.insert(qf_list, new_entry)
+  vim.fn.setqflist(qf_list, 'r')
 end
 vim.keymap.set('n', '<leader>qa', AddCurrentFileToQF, { desc = '[Q]uickfix [A]dd' })
 
@@ -128,7 +133,7 @@ vim.keymap.set('n', '<leader>qq', [[<cmd>qa<cr>]])
 
 vim.keymap.set({ 'n', 'i' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
 
-vim.keymap.set({ 'n', 'i' }, '<Esc>', '<Esc><cmd>noh<cr>')
+vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Esc><cmd>noh<cr>')
 
 -- Set up an autocommand for a specific filetype
 vim.api.nvim_create_autocmd('FileType', {
@@ -161,6 +166,9 @@ end
 
 vim.keymap.set('n', '<leader>gf', open_buffer_in_split, { desc = 'Go to file in other split' })
 
+vim.keymap.set('n', '<leader>olo', '<cmd>ObsidianBridgeOn<cr>', { desc = '[O]bsidian [L]ink [O]n' })
+vim.keymap.set('n', '<leader>olf', '<cmd>ObsidianBridgeOff<cr>', { desc = '[O]bsidian [L]ink of[F]' })
+
 local concealed_cursor = true
 vim.keymap.set('n', '<leader>th', function()
   if concealed_cursor then
@@ -187,12 +195,12 @@ local function load_wikilinks_to_quickfix()
         bufnr = bufnr,
         lnum = lnum,
         col = col,
-        text = line
+        text = line,
       })
     end
   end
   vim.fn.setqflist(locations, 'r')
-  vim.cmd('cfirst')
+  vim.cmd 'cfirst'
   -- vim.cmd('lopen')
 end
 vim.keymap.set('n', '<leader>gw', load_wikilinks_to_quickfix, { desc = '[L]oad [W]ikilinks' })

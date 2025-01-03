@@ -63,19 +63,19 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 local servers = {
   pyright = {},
   julials = {},
-  typst_lsp = {
-    settings = {
-      exportPdf = 'never',
-    },
-  },
-  tsserver = {},
+  -- typst_lsp = {
+  --   settings = {
+  --     exportPdf = 'never',
+  --   },
+  -- },
+  ts_ls = {},
   ltex = {
     ltex = {
       enabled = true,
       checkFrequency = 'save',
       language = 'en-US',
       dictionary = {
-        ['en-US'] = {'preconditioner', 'Longform', 'Zotero', 'url', 'TODO', 'coherences', 'HardTanh', 'MaxPool', 'piecewise-linear', 'subsampled', 'neurips', 'piecewise', 'Piecewise', 'sqrt', 'txt', 'std', 'De-biasing', 'de-biased', 'monotonicity', 'Monotonicity', 'Yilmaz', 'Christoffel', 'isometries', 'orthogonalization', 'ReLU', 'logarithmically', 'Adcock', 'pseudoinverse', 'iff', 'orthant'},
+        ['en-US'] = {'preconditioner', 'Longform', 'Zotero', 'url', 'TODO', 'coherences', 'HardTanh', 'MaxPool', 'piecewise-linear', 'subsampled', 'neurips', 'piecewise', 'Piecewise', 'sqrt', 'txt', 'std', 'De-biasing', 'de-biased', 'monotonicity', 'Monotonicity', 'Yilmaz', 'Christoffel', 'isometries', 'orthogonalization', 'ReLU', 'logarithmically', 'Adcock', 'pseudoinverse', 'iff', 'orthant', 'subsample', 'Ozgur', 'Yaniv', 'Haar', 'litreview', 'longform'},
       },
       additionalRules = {
         enablePickyRules = true, -- only at the end
@@ -89,7 +89,7 @@ local servers = {
 }
 
 -- Setup neovim lua configuration
-require('neodev').setup()
+-- require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
