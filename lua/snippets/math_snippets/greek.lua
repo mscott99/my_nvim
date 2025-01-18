@@ -13,7 +13,7 @@ return function(is_math, not_math)
     local second_letter = string.sub(element, 2, 2)
     return s({
       name = element,
-      trig = ";" .. first_letter .. second_letter,
+      trig = ';' .. first_letter .. second_letter,
       -- trig = ';' .. first_letter,
       wordTrig = false, -- I need these to work even after the underscore.
       condition = is_math,
@@ -69,6 +69,14 @@ return function(is_math, not_math)
       condition = is_math,
       snippetType = 'autosnippet',
     }, { t '\\varepsilon' }),
+    s({
+      name = 'vaphi',
+      trig = ';vp',
+      wordTrig = false,
+      priority = 400,
+      condition = is_math,
+      snippetType = 'autosnippet',
+    }, { t '\\varphi' }),
     s({ name = 'ell', trig = ';el', wordTrig = false, condition = is_math, snippetType = 'autosnippet', priority = 400 }, { t '\\ell' }),
   })
   return letter_snippets

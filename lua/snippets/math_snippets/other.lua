@@ -19,7 +19,9 @@ return function(is_math, not_math)
     local manual = {
     -- s({trig = "ce", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
     -- s({trig = ":=", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
-    s({ trig = "\\\\\\", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\setminus") }),
+    s({ trig = "\\\\\\", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\setminus ") }),
+    s({ trig = "ems", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\emptyset") }),
+    s({ trig = "om", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\ominus") }),
     s({ trig = "Bo", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("B_\\infty") }),
     s({ trig = "Rn", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^n") }),
     s({ trig = "Rk", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^k") }),

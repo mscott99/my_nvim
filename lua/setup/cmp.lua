@@ -11,6 +11,25 @@ require('luasnip').config.setup {
   store_selection_keys = '<Tab>',
 }
 
+local function can_pass_delimiter()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local char = line:sub(col + 1, col + 1)
+  local delimiters = { ')', ']', "'", '"' }
+
+  for _, delimiter in ipairs(delimiters) do
+    if char == delimiter then
+      return true
+    end
+  end
+  return false
+end
+
+local function move_cursor_right()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], col + 1 })
+end
+
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -18,12 +37,13 @@ cmp.setup {
     end,
   },
   dependencies = {
-    { "ray-x/cmp-treesitter" },
-    {"benfowler/telescope-luasnip.nvim",
+    { 'ray-x/cmp-treesitter' },
+    {
+      'benfowler/telescope-luasnip.nvim',
       config = function()
-        require('telescope').load_extension('luasnip')
-      end
-    }
+        require('telescope').load_extension 'luasnip'
+      end,
+    },
   },
   completion = {
     completeopt = 'menu,menuone,noinsert',
@@ -40,7 +60,9 @@ cmp.setup {
       select = true,
     },
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if luasnip.expand_or_jumpable() then
+      if can_pass_delimiter() then
+        move_cursor_right()
+      elseif luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
         -- elseif cmp.visible() then
         -- You could replace select_next_item() with confirm({ select = true }) to get VS Code autocompletion behavior
@@ -65,12 +87,12 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
-    { name = "otter" },       -- for code chunks in quarto
-    { name = "treesitter", keyword_length = 5, max_item_count = 3 },
+    { name = 'otter' }, -- for code chunks in quarto
+    { name = 'treesitter', keyword_length = 5, max_item_count = 3 },
   },
   -- experimental = {
-    -- ghost_text = {
-    --   hl_group = 'CmpGhostText',
-    -- },
+  -- ghost_text = {
+  --   hl_group = 'CmpGhostText',
+  -- },
   -- },
 }

@@ -60,6 +60,7 @@ local backslash_functions = {
   'diag',
   'aff',
   'cone',
+  'sgn',
 }
 
 local no_backslash_add_space = {

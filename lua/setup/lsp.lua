@@ -75,14 +75,67 @@ local servers = {
       checkFrequency = 'save',
       language = 'en-US',
       dictionary = {
-        ['en-US'] = {'preconditioner', 'Longform', 'Zotero', 'url', 'TODO', 'coherences', 'HardTanh', 'MaxPool', 'piecewise-linear', 'subsampled', 'neurips', 'piecewise', 'Piecewise', 'sqrt', 'txt', 'std', 'De-biasing', 'de-biased', 'monotonicity', 'Monotonicity', 'Yilmaz', 'Christoffel', 'isometries', 'orthogonalization', 'ReLU', 'logarithmically', 'Adcock', 'pseudoinverse', 'iff', 'orthant', 'subsample', 'Ozgur', 'Yaniv', 'Haar', 'litreview', 'longform'},
+        ['en-US'] = {
+          'preconditioner',
+          'Longform',
+          'Zotero',
+          'url',
+          'TODO',
+          'coherences',
+          'HardTanh',
+          'MaxPool',
+          'piecewise-linear',
+          'subsampled',
+          'neurips',
+          'piecewise',
+          'Piecewise',
+          'sqrt',
+          'txt',
+          'std',
+          'De-biasing',
+          'de-biased',
+          'monotonicity',
+          'Monotonicity',
+          'Yilmaz',
+          'Christoffel',
+          'isometries',
+          'orthogonalization',
+          'ReLU',
+          'logarithmically',
+          'Adcock',
+          'pseudoinverse',
+          'iff',
+          'orthant',
+          'subsample',
+          'Ozgur',
+          'Yaniv',
+          'Haar',
+          'litreview',
+          'longform',
+          'wikilink',
+          'wikilinks',
+          'chatgpt',
+        },
       },
       additionalRules = {
         enablePickyRules = true, -- only at the end
-        languageModel = "/Users/matthewscott/.config/my_nvim/data/ngrams/",
+        languageModel = '/Users/matthewscott/.config/my_nvim/data/ngrams/',
       },
       disabledRules = {
-        ['en-US'] = { 'UPPERCASE_SENTENCE_START', 'GERMAN_QUOTES', 'EN_UNPAIRED_BRACKETS', 'UNLIKELY_OPENING_PUNCTUATION', 'COMMA_PARENTHESIS_WHITESPACE', 'EN_A_VS_AN', 'EN_QUOTES', 'CONFUSION_RULE_BOUND_BOND', 'TOO_LONG_SENTENCE', 'SO_AS_TO', 'PUNCTUATION_PARAGRAPH_END', 'CONSEQUENCES_OF_FOR'},
+        ['en-US'] = {
+          'UPPERCASE_SENTENCE_START',
+          'GERMAN_QUOTES',
+          'EN_UNPAIRED_BRACKETS',
+          'UNLIKELY_OPENING_PUNCTUATION',
+          'COMMA_PARENTHESIS_WHITESPACE',
+          'EN_A_VS_AN',
+          'EN_QUOTES',
+          'CONFUSION_RULE_BOUND_BOND',
+          'TOO_LONG_SENTENCE',
+          'SO_AS_TO',
+          'PUNCTUATION_PARAGRAPH_END',
+          'CONSEQUENCES_OF_FOR',
+        },
       },
     },
   },
@@ -110,5 +163,15 @@ mason_lspconfig.setup_handlers {
       filetypes = (servers[server_name] or {}).filetypes,
     }
   end,
+}
+
+require('lspconfig').sourcekit.setup {
+    capabilities = {
+      workspace = {
+        didChangeWatchedFiles = {
+          dynamicRegistration = true,
+        },
+      },
+    },
 }
 require('lspconfig').mojo.setup {}

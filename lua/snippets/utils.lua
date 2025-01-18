@@ -281,6 +281,7 @@ M.short_greek = {
 
 local others = {
   'varepsilon',
+  'varphi'
 }
 
 M.redundant_starting_greeks = M.concat { M.greek_letters, others, M.short_greek }
