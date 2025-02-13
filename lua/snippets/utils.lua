@@ -64,15 +64,15 @@ local match_latex = function(line, pos, break_pattern)
         goto continue
       end
     end
+    if #stack == 0 and not first_letter and (preceding_str == '' or preceding_str:match(break_pattern) ~= nil) then
+      return i
+    end
     for closing, _ in pairs(close) do
       if preceding_str:match(closing .. '$') then
         table.insert(stack, closing)
         i = i - #closing + 1 -- will be decremented
         goto continue
       end
-    end
-    if #stack == 0 and not first_letter and (preceding_str == '' or preceding_str:match(break_pattern) ~= nil) then
-      return i
     end
     if #stack ~= 0 and (preceding_str:sub(-1) == nil or preceding_str:sub(-1) == '' or preceding_str:sub(-1) == '$') then
       vim.notify('Invalid LaTeX syntax: unmatched brackets.', vim.log.levels.WARN)

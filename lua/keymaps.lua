@@ -25,7 +25,7 @@ end
 
 vim.keymap.set('n', '<leader>tw', toggle_wrap_mode, { desc = '[T]oggle [W]rap' })
 
-vim.keymap.set('n', '<leader>dt', function()
+vim.keymap.set('n', '<leader>gdt', function()
   -- Get all windows
   local windows = vim.api.nvim_list_wins()
   -- Check if we have exactly two windows

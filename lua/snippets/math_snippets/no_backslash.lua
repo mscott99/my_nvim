@@ -11,6 +11,7 @@ local fmta = require('luasnip.extras.fmt').fmta
 local rep = require('luasnip.extras').rep
 
 local no_backslash = {
+  'trunc',
   'log',
   'int',
   'psi',
@@ -30,15 +31,16 @@ local no_backslash = {
   'acos',
   'cotan',
   'conv',
-  'min',
-  'max',
   'argmin',
   'argmax',
+  'min',
+  'max',
   'proj',
   'dist',
   'odot',
   'ln',
   'star',
+  'measfield',
   'field',
   'exp',
   'cot',

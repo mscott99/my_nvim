@@ -20,7 +20,9 @@ return function(is_math, not_math)
     -- s({trig = "ce", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
     -- s({trig = ":=", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
     s({ trig = "\\\\\\", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\setminus ") }),
+    s({ trig = "||", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\mid ") }),
     s({ trig = "ems", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\emptyset") }),
+    s({ trig = "mf", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\measfield") }),
     s({ trig = "om", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\ominus") }),
     s({ trig = "Bo", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("B_\\infty") }),
     s({ trig = "Rn", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\mathbb{R}^n") }),
@@ -80,6 +82,18 @@ return function(is_math, not_math)
       },
       { f(function(_, snip)
         return snip.captures[1] .. "^2"
+      end) }
+    ),
+    s(
+      {
+        trig = [[([^ %[({\<'%$])dag]],
+        regTrig = true,
+        wordTrig = false,
+        condition = is_math,
+        snippetType = "autosnippet",
+      },
+      { f(function(_, snip)
+        return snip.captures[1] .. "^\\dagger "
       end) }
     ),
     s(

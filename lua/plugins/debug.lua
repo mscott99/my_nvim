@@ -9,7 +9,7 @@
 return {
   {
     'mxsdev/nvim-dap-vscode-js',
-    lazy=true,
+    lazy = true,
     dependencies = { 'microsoft/vscode-js-debug' },
     opts = { adapters = { 'pwa-node' }, debugger_path = '/Users/matthewscott/.local/share/my_nvim/lazy/vscode-js-debug' },
     -- do not clean, built manually.
@@ -20,6 +20,17 @@ return {
     -- build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
     -- },
     -- },
+  },
+  {
+    'mfussenegger/nvim-dap-python',
+    lazy = true,
+    ft = 'python',
+    dependencies = { 'mfussenegger/nvim-dap' },
+    -- config = function()
+    --   local dpython = require('dap-python')
+    --   dpython.setup("./.venv/bin/python3")
+    --   vim.keymap.set('n', '<leader>dt', dpython.test_method, { desc = 'Debug: Test Method' })
+    -- end,
   },
   {
     -- NOTE: Yes, you can install new plugins here!
@@ -37,10 +48,10 @@ return {
       -- Installs the debug adapters for you
       'williamboman/mason.nvim',
       'jay-babu/mason-nvim-dap.nvim',
-
       'jbyuki/one-small-step-for-vimkind',
-
       'mxsdev/nvim-dap-vscode-js',
+      'mxsdev/nvim-dap-vscode-js',
+      'mfussenegger/nvim-dap-python',
     },
     config = function()
       local dap = require 'dap'
@@ -65,7 +76,6 @@ return {
       vim.keymap.set('n', '<leader>do', dap.step_out, { desc = 'Debug: Step Out' })
       vim.keymap.set('n', '<leader>dp', dap.terminate, { desc = 'Debug: Terminate' })
       vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-
       vim.keymap.set('n', '<leader>dq', [[:lua require"osv".launch({port = 8086})<CR>]], { noremap = true, desc = '[D]ebug [N]eovim [S]erve' })
 
       vim.keymap.set('n', '<leader>B', function()
@@ -75,7 +85,7 @@ return {
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
       vim.keymap.set('n', '<leader>dut', dapui.toggle, { desc = 'Debug: See last session result.' })
 
-      vim.keymap.set({ 'n', 'v' }, '<leader>dh', dapui.eval , { noremap = true, silent = true })
+      vim.keymap.set({ 'n', 'v' }, '<leader>dh', dapui.eval, { noremap = true, silent = true })
 
       require('mason-nvim-dap').setup {
         -- Makes a best effort to setup the various debuggers with
@@ -122,7 +132,6 @@ return {
           },
         },
       }
-
 
       dap.listeners.after.event_initialized['dapui_config'] = function()
         dapui.open()

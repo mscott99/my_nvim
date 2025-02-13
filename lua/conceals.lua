@@ -101,10 +101,8 @@ local function setup_custom_conceals()
     syntax match texMathCmd '\\boldsymbol{\\psi}' conceal cchar=𝝍
     syntax match texMathCmd '\\boldsymbol{\\omega}' conceal cchar=𝝎
 
-    syntax match texMathCmd '\\measfield' conceal cchar=𝕔
+    syntax match texMathCmd '\\measfield' conceal cchar=𝕂
     syntax match texMathCmd '\\field' conceal cchar=ℝ 
-
-    syntax match texMathCmd '\\tilde{a}' conceal cchar= 
     ]]
   --
   -- Copilot give me math bold C like blackboard for complex: 𝕔
