@@ -1,4 +1,50 @@
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
+
+local function smart_append_to_qflist(prompt_bufnr)
+  -- Get the current picker
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  
+  -- Get multi-selections (selected entries)
+  local selections = picker:get_multi_selection()
+  
+  -- Determine which entries to use
+  local entries
+  if #selections > 0 then
+    -- If there are selections, use them
+    entries = selections
+  else
+    -- Otherwise, collect all entries from the picker's manager
+    entries = {}
+    for entry in picker.manager:iter() do
+      table.insert(entries, entry)
+    end
+  end
+  
+  -- Convert entries to quickfix format
+  local qf_entries = {}
+  for _, entry in ipairs(entries) do
+    local qf_entry = {
+      bufnr = entry.bufnr,
+      filename = entry.filename,
+      lnum = entry.lnum or 1,
+      col = entry.col or 1,
+      text = entry.text or (type(entry.value) == "table" and entry.value.text) or entry.value or "",
+    }
+    -- Only include entries with a valid bufnr or filename
+    if qf_entry.bufnr or qf_entry.filename then
+      table.insert(qf_entries, qf_entry)
+    end
+  end
+  
+  -- Append to the quickfix list
+  vim.fn.setqflist(qf_entries, "a")
+  
+  -- Close the Telescope prompt
+  actions.close(prompt_bufnr)
+end
 -- See `:help telescope` and `:help telescope.setup()`
+
 require('telescope').setup {
   defaults = {
     prompt_prefix = ' ',
@@ -7,7 +53,8 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
-	['<C-q>'] = require('telescope.actions').smart_send_to_qflist
+	['<C-q>'] = require('telescope.actions').smart_send_to_qflist,
+	['<C-s>'] = smart_append_to_qflist
       },
     },
   },

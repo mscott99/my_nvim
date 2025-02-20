@@ -75,6 +75,7 @@ function AddCurrentFileToQF()
 end
 vim.keymap.set('n', '<leader>qa', AddCurrentFileToQF, { desc = '[Q]uickfix [A]dd' })
 
+vim.keymap.set('n', '<leader>qc', '<cmd>cexpr []<cr>', { desc = '[Q]uickfix [C]lear' })
 vim.keymap.set('n', '<leader>ghd', '<cmd>:Gdiffsplit :1 | Gvdiffsplit!<cr>', { desc = 'Diff merge conflict' })
 vim.keymap.set('n', '<leader>ghgb', '<cmd>diffget //1<cr>', { desc = 'Diff get base' })
 vim.keymap.set('n', '<leader>ghgt', '<cmd>diffget //2<cr>', { desc = 'Diff get target branch' })
