@@ -58,11 +58,10 @@ function M.make_anthropic_spec_curl_args_raw(opts, messages, system_prompt)
     system = system_prompt,
     messages = messages,
     model = opts.model,
-    stream = true,
+    stream = true, -- Explicitly disable streaming
     max_tokens = 4096,
   }
-  print(vim.json.encode(data))
-  local args = { '-N', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', vim.json.encode(data) }
+  local args = { '-X', 'POST', '-H', 'Content-Type: application/json', '-d', vim.json.encode(data) }
   if api_key then
     table.insert(args, '-H')
     table.insert(args, 'x-api-key: ' .. api_key)
@@ -71,6 +70,55 @@ function M.make_anthropic_spec_curl_args_raw(opts, messages, system_prompt)
   end
   table.insert(args, url)
   return args
+end
+
+-- function M.make_anthropic_spec_curl_args_raw(opts, messages, system_prompt)
+--   local url = opts.url
+--   local api_key = opts.api_key_name and get_api_key(opts.api_key_name)
+--   local data = {
+--     system = system_prompt,
+--     messages = messages,
+--     model = opts.model,
+--     stream = true,
+--     max_tokens = 4096,
+--   }
+--   print(vim.json.encode(data))
+--   local args = { '-N', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', vim.json.encode(data) }
+--   if api_key then
+--     table.insert(args, '-H')
+--     table.insert(args, 'x-api-key: ' .. api_key)
+--     table.insert(args, '-H')
+--     table.insert(args, 'anthropic-version: 2023-06-01')
+--   end
+--   table.insert(args, url)
+--   return args
+-- end
+
+function M.invoke_llm(opts, messages, make_curl_args_fn, handle_data_fn)
+  local system_prompt = opts.system_prompt or 'You are a helpful assistant.'
+  opts.stream = false
+  local args = make_curl_args_fn(opts, messages, system_prompt)
+  -- Modify args to disable streaming
+  for i, arg in ipairs(args) do
+    if arg == vim.json.encode({ stream = true }) then
+      args[i] = vim.json.encode({ stream = false, max_tokens = 4096, model = opts.model, system = system_prompt, messages = messages })
+      break
+    end
+  end
+
+  local job = Job:new {
+    command = 'curl',
+    args = args,
+    on_exit = function(j, return_val)
+      if return_val == 0 then
+        local response = vim.json.decode(table.concat(j:result(), '\n'))
+        handle_data_fn(response)
+      else
+        print('Error calling Anthropic API: ' .. table.concat(j:stderr_result(), '\n'))
+      end
+    end,
+  }
+  job:sync() -- Wait for the job to complete
 end
 
 -- function M.make_anthropic_spec_curl_args(opts, prompt, system_prompt)
@@ -149,8 +197,8 @@ function M.get_prompt(opts)
   return prompt
 end
 
-function M.basic_wrap_prompt(opts)
-  return { { role = 'user', content = M.get_prompt(opts) } }
+function M.basic_wrap_prompt(prompt)
+  return { { role = 'user', content = prompt } }
 end
 
 function M.handle_anthropic_spec_data(data_stream, event_state)

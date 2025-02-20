@@ -185,7 +185,7 @@ return {
         nmap gsdb <Plug>(sandwich-delete-auto)
       ]]
       vim.cmd [[
-        let g:sandwich#timeout = 0
+        let g:operator#sandwich#timeout = 0
         let g:textobj#sandwich#timeout = 0
         let g:operator#sandwich#timeout = 0
         let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
