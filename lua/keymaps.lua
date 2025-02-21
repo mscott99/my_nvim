@@ -60,22 +60,6 @@ vim.keymap.set('n', '<leader>gdt', function()
   vim.api.nvim_set_current_win(windows[1])
 end, { desc = '[D]iff [T]his' })
 
--- Load saved quickfix lists
-function AddCurrentFileToQF()
-  local current_file = vim.fn.expand '%:p'
-  local current_line = vim.fn.line '.'
-  local qf_list = vim.fn.getqflist()
-  local new_entry = {
-    filename = current_file,
-    lnum = current_line,
-    text = current_file,
-  }
-  table.insert(qf_list, new_entry)
-  vim.fn.setqflist(qf_list, 'r')
-end
-vim.keymap.set('n', '<leader>qa', AddCurrentFileToQF, { desc = '[Q]uickfix [A]dd' })
-
-vim.keymap.set('n', '<leader>qc', '<cmd>cexpr []<cr>', { desc = '[Q]uickfix [C]lear' })
 vim.keymap.set('n', '<leader>ghd', '<cmd>:Gdiffsplit :1 | Gvdiffsplit!<cr>', { desc = 'Diff merge conflict' })
 vim.keymap.set('n', '<leader>ghgb', '<cmd>diffget //1<cr>', { desc = 'Diff get base' })
 vim.keymap.set('n', '<leader>ghgt', '<cmd>diffget //2<cr>', { desc = 'Diff get target branch' })
@@ -103,7 +87,7 @@ vim.keymap.set({ 'n', 'i' }, '<C-p>', '<cmd>cprev<cr>', { desc = '[Q]uickfix [P]
 -- Show quickfix
 vim.keymap.set('n', '<leader>qo', '<cmd>copen<cr>', { desc = '[Q]uickfix [O]pen' })
 -- Close quickfix
-vim.keymap.set('n', '<leader>qn', '<cmd>cclose<cr>', { desc = '[Q]uickfix [N]ot' })
+vim.keymap.set('n', '<leader>qn', '<cmd>cclose<cr>', { desc = '[Q]uickfix [N]ot (open) (close quickfix)' })
 
 vim.keymap.set('n', '<leader>yr', '<cmd>!yabai --restart-service<cr>', { desc = '[Y]abai [R]estart' })
 
@@ -147,7 +131,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- funky keymaps
 
-vim.keymap.set('n', '<leader>fd', "<cmd>call delete(expand('%')) | bdelete!<CR>", { desc = '[F]ile [D]elete' })
+vim.keymap.set('n', '<leader>dgf', "<cmd>call delete(expand('%')) | bdelete!<CR>", { desc = '[D]elete [G] [F]ile' })
 
 vim.api.nvim_create_user_command('FileDelete', function()
   vim.cmd "call delete(expand('%')) | bdelete!"

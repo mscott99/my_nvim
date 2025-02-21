@@ -1,36 +1,6 @@
 local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
 
-local function smart_append_to_qflist(prompt_bufnr)
-  local picker = action_state.get_current_picker(prompt_bufnr)
-  local selections = picker:get_multi_selection()
-  local entries
-  if #selections > 0 then
-    entries = selections
-  else
-    entries = {}
-    for entry in picker.manager:iter() do
-      table.insert(entries, entry)
-    end
-  end
-  local qf_entries = {}
-  for _, entry in ipairs(entries) do
-    local qf_entry = {
-      bufnr = entry.bufnr,
-      filename = entry.filename,
-      lnum = entry.lnum or 1,
-      col = entry.col or 1,
-      text = entry.text or (type(entry.value) == 'table' and entry.value.text) or entry.value or '',
-    }
-    if qf_entry.bufnr or qf_entry.filename then
-      table.insert(qf_entries, qf_entry)
-    end
-  end
-  vim.fn.setqflist(qf_entries, 'a')
-  actions.close(prompt_bufnr)
-end
--- See `:help telescope` and `:help telescope.setup()`
-
 require('telescope').setup {
   defaults = {
     prompt_prefix = ' ',
@@ -39,8 +9,8 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
-        ['<C-q>'] = require('telescope.actions').smart_send_to_qflist,
-        ['<C-s>'] = smart_append_to_qflist,
+        ['<C-q>'] = actions.smart_send_to_qflist,
+        ['<C-s>'] = actions.smart_add_to_qflist,
       },
     },
   },
@@ -118,22 +88,7 @@ end
 
 local builtin = require 'telescope.builtin'
 
-local live_grep_qflist = function()
-  local qflist = vim.fn.getqflist()
-  local filetable = {}
-  local hashlist = {}
 
-  for _, value in pairs(qflist) do
-    local name = vim.api.nvim_buf_get_name(value.bufnr)
-
-    if name and not hashlist[name] then
-      hashlist[name] = true
-      table.insert(filetable, name)
-    end
-  end
-
-  builtin.live_grep { search_dirs = filetable, use_regex = true }
-end
 
 vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 
@@ -219,7 +174,6 @@ vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc =
 vim.keymap.set('n', '<leader>sg', function()
   require('telescope.builtin').live_grep { cwd = find_git_root(), use_regex = true }
 end, { desc = '[S]earch by [G]rep on Git Root of Current File' })
-vim.keymap.set('n', '<leader>sq', live_grep_qflist, { desc = '[S]earch [Q]uickfix list' })
 vim.keymap.set('n', '<leader>ff', function()
   require('telescope.builtin').find_files { cwd = find_git_root() }
 end, { desc = '[F]ind [F]iles' })
@@ -241,3 +195,47 @@ vim.keymap.set('n', '<leader>sdw', function()
   require('telescope.builtin').diagnostics { severity_limit = 'W' }
 end, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+
+-- Search for mchat files in local .chats directory of git root
+local function find_mchat_files()
+  local git_root = find_git_root()
+  local global_chats = vim.fn.expand('~/.config/chats')
+  local chats_dir = git_root .. '/.chats'
+  
+  -- Create global chats directory if it doesn't exist
+  if vim.fn.isdirectory(global_chats) == 0 then
+    vim.fn.mkdir(global_chats, 'p')
+  end
+
+  -- Use telescope builtin find_files to search .chats directory
+  require('telescope.builtin').find_files {
+    search_dirs = { chats_dir, global_chats },  -- Order matters: local chats will appear first
+    prompt_title = 'Find Chat Files',
+    sorter = require('telescope.sorters').get_generic_fuzzy_sorter {
+      -- Custom scoring function to prioritize local chats
+      scoring_function = function(_, prompt, line)
+        local score = require('telescope.sorters').get_generic_fuzzy_sorter().scoring_function(_, prompt, line)
+        -- If file is from local .chats directory, boost its score
+        if vim.startswith(line, chats_dir) then
+          score = score * 0.5  -- Lower score means higher priority
+        end
+        return score
+      end
+    },
+    attach_mappings = function(prompt_bufnr, map)
+      local action_set = require('telescope.actions.set')
+      action_set.select:replace(function()
+        local selection = require('telescope.actions.state').get_selected_entry()
+        require('telescope.actions').close(prompt_bufnr)
+        if selection then
+          vim.cmd('edit ' .. selection.path)
+        end
+      end)
+      return true
+    end,
+  }
+end
+
+-- Add keybinding
+vim.keymap.set('n', '<leader>fd', find_mchat_files, { desc = '[F]ind [C]hat files' })
+

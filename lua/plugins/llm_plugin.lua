@@ -24,7 +24,7 @@ return {
         chats = {
           claude_chat = {
             provider = claude,
-            system = 'You are a helpful assistant for note-taking and prose editing.',
+            system = 'You are a helpful assistant for note-taking and prose editing. When referring to files notes in my Obsidian vault (~/Obsidian/myVault/), do it with wikilinks [[...]] with the name of the file as the address, without the ".md", and without the directories in which they are. Put headers for specific sections, and line numbers (the line numbers should not be inside the wikilink).',
             create = function()
               return ''
             end,
@@ -38,6 +38,27 @@ return {
                 model = 'claude-2',
                 max_tokens = 256,
                 temperature = 0.5,
+                top_p = 0.95,
+              }
+            end,
+          },
+          grok_chat = {
+            provider = claude, -- We'll reuse claude's SSE handling
+            system = 'You are a helpful assistant. You are confident in your answers and strive to share insightful information. You aim to provide thorough explanations while remaining concise.',
+            create = function()
+              return ''
+            end,
+            run = function(messages, config)
+              -- Comments: Based on the Grok API info provided, we need to:
+              -- - Change the endpoint/auth
+              -- - Update model name
+              -- - Keep compatible parameters
+              return {
+                system = config.system,
+                messages = messages,
+                model = 'grok-3', -- Using latest model
+                max_tokens = 4096, -- Grok-3's typical context length
+                temperature = 0.7, -- Slightly higher for more creative responses
                 top_p = 0.95,
               }
             end,

@@ -1,26 +1,51 @@
 local qf_dir = vim.fn.expand '~/.config/my_lists/'
 vim.fn.mkdir(qf_dir, 'p') -- Create the directory if it doesn't exist ("p" ensures parent dirs are created too)
 
-local function save_to_file(filepath, qf_list)
-  -- Convert the quickfix list to a JSON string
-  local json_data = vim.fn.json_encode(qf_list)
+-- Load saved quickfix lists
+function AddCurrentFileToQF()
+  local current_file = vim.fn.expand '%:p'
+  local current_line = vim.fn.line '.'
+  local qf_list = vim.fn.getqflist()
+  local new_entry = {
+    filename = current_file,
+    lnum = current_line,
+    text = current_file,
+  }
+  table.insert(qf_list, new_entry)
+  vim.fn.setqflist(qf_list, 'r')
+end
+vim.keymap.set('n', '<leader>qa', AddCurrentFileToQF, { desc = '[Q]uickfix [A]dd' })
 
-  -- Write to the file
-  local ok, err = pcall(function()
-    local file = io.open(filepath, 'w')
-    if not file then
-      error('Could not open file for writing: ' .. filepath)
+vim.keymap.set('n', '<leader>qc', '<cmd>cexpr []<cr>', { desc = '[Q]uickfix [C]lear' })
+
+-- Function to view quickfix list in telescope
+local function find_in_quickfixlist()
+  require('telescope.builtin').quickfix({
+    bufnr = vim.api.nvim_get_current_buf(),
+  })
+end
+
+-- Set keymap to open quickfix list in telescope
+vim.keymap.set('n', '<leader>fq', find_in_quickfixlist, { desc = '[F]ind in [Q]uickfix list' })
+
+local live_grep_qflist = function()
+  local qflist = vim.fn.getqflist()
+  local filetable = {}
+  local hashlist = {}
+
+  for _, value in pairs(qflist) do
+    local name = vim.api.nvim_buf_get_name(value.bufnr)
+
+    if name and not hashlist[name] then
+      hashlist[name] = true
+      table.insert(filetable, name)
     end
-    file:write(json_data)
-    file:close()
-  end)
-
-  if ok then
-    vim.notify('Quickfix list saved to ' .. filepath, vim.log.levels.INFO)
-  else
-    vim.notify('Failed to save quickfix list: ' .. err, vim.log.levels.ERROR)
   end
-end -- Define the directory for storing quickfix lists
+
+  builtin.live_grep { search_dirs = filetable, use_regex = true }
+end
+
+vim.keymap.set('n', '<leader>sq', live_grep_qflist, { desc = '[S]earch [Q]uickfix list' })
 
 -- Function to save the current quickfix list to a file
 local function save_quickfix_list()
@@ -31,12 +56,38 @@ local function save_quickfix_list()
     vim.notify('Quickfix list is empty, nothing to save', vim.log.levels.WARN)
     return
   end
+
+  -- Open a temporary buffer to store the quickfix list
+  local tmp_bufnr = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_option(tmp_bufnr, 'buftype', 'nofile')
+
+  -- Format each entry according to errorformat: "filename:lnum:col:text"
+  local lines = {}
+  for _, entry in ipairs(qf_list) do
+    local filename = entry.filename or vim.api.nvim_buf_get_name(entry.bufnr)
+    -- Convert to absolute path
+    filename = vim.fn.fnamemodify(filename, ':p')
+    local line = string.format("%s:%d:%d:%s",
+      filename,
+      entry.lnum or 1,
+      entry.col or 1,
+      entry.text or ""
+    )
+    table.insert(lines, line)
+  end
+
+  -- Write the formatted lines to the temporary buffer
+  vim.api.nvim_buf_set_lines(tmp_bufnr, 0, -1, false, lines)
+
+  -- Prompt for filename
   vim.ui.input({ prompt = 'Filename: ' }, function(filename)
     if not filename or filename == '' then
       vim.notify('No filename provided, aborting', vim.log.levels.WARN)
+      vim.api.nvim_buf_delete(tmp_bufnr, { force = true })
       return
     end
-    filename = filename:gsub('[/\\]', '_') .. '.json'
+
+    filename = filename:gsub('[/\\]', '_') .. '.qf'
     local filepath = qf_dir .. filename
 
     if vim.fn.filereadable(filepath) == 1 then
@@ -46,12 +97,33 @@ local function save_quickfix_list()
       }, function(response)
         if not response or response:lower() ~= 'y' then
           vim.notify('Save aborted', vim.log.levels.INFO)
+          vim.api.nvim_buf_delete(tmp_bufnr, { force = true })
           return
         end
-        save_to_file(filepath, qf_list)
+        -- Write buffer content to file
+        local lines = vim.api.nvim_buf_get_lines(tmp_bufnr, 0, -1, false)
+        local file = io.open(filepath, 'w')
+        if file then
+          file:write(table.concat(lines, '\n'))
+          file:close()
+          vim.notify('Quickfix list saved to ' .. filepath, vim.log.levels.INFO)
+        else
+          vim.notify('Failed to save quickfix list', vim.log.levels.ERROR)
+        end
+        vim.api.nvim_buf_delete(tmp_bufnr, { force = true })
       end)
     else
-      save_to_file(filepath, qf_list)
+      -- Write buffer content to file
+      local lines = vim.api.nvim_buf_get_lines(tmp_bufnr, 0, -1, false)
+      local file = io.open(filepath, 'w')
+      if file then
+        file:write(table.concat(lines, '\n'))
+        file:close()
+        vim.notify('Quickfix list saved to ' .. filepath, vim.log.levels.INFO)
+      else
+        vim.notify('Failed to save quickfix list', vim.log.levels.ERROR)
+      end
+      vim.api.nvim_buf_delete(tmp_bufnr, { force = true })
     end
   end)
 end
@@ -67,8 +139,9 @@ local action_state = require("telescope.actions.state")
 
 -- Function to load a quickfix list using Telescope with delete capability
 local function load_quickfix_list()
+  -- Prepare functions for picker handling
   local function get_files()
-    return vim.fn.glob(qf_dir .. "*.json", true, true)
+    return vim.fn.glob(qf_dir .. "*.qf", true, true)
   end
 
   local function refresh_picker(prompt_bufnr)
@@ -93,7 +166,7 @@ local function load_quickfix_list()
     return true
   end
 
-  -- Define the delete action as a reusable function
+  -- Define delete action
   local function delete_selected_files(prompt_bufnr)
     local picker = action_state.get_current_picker(prompt_bufnr)
     local selections = picker:get_multi_selection()
@@ -148,27 +221,18 @@ local function load_quickfix_list()
         if not selection then return end
         local filepath = selection.value
         actions.close(prompt_bufnr)
-
-        local ok, data = pcall(function()
-          local file = io.open(filepath, "r")
-          if not file then error("Could not open file: " .. filepath) end
-          local content = file:read("*a")
-          file:close()
-          return vim.fn.json_decode(content)
-        end)
-
-        if ok then
-          vim.fn.setqflist(data, "r")
-          vim.notify("Quickfix list loaded from " .. filepath, vim.log.levels.INFO)
-        else
-          vim.notify("Failed to load quickfix list: " .. data, vim.log.levels.ERROR)
-        end
+        
+        -- Using cfile is ideal here because:
+        -- 1. It handles the errorformat parsing automatically
+        -- 2. It's built into vim and well-tested
+        -- 3. It maintains consistency with vim's quickfix functionality
+        -- 4. It handles file paths and line numbers robustly
+        vim.cmd('cgetfile ' .. vim.fn.fnameescape(filepath))
+        vim.notify("Quickfix list loaded from " .. filepath, vim.log.levels.INFO)
       end)
 
-      -- Map delete action to <C-d> for both insert and normal modes
-      map({"i", "n"}, "<C-d>", function()
-        delete_selected_files(prompt_bufnr)
-      end)
+      -- Map delete action to <C-d>
+      map({"i", "n"}, "<C-d>", delete_selected_files)
 
       return true -- Keep default mappings
     end,
