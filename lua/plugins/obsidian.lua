@@ -11,6 +11,7 @@ return {
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     config = function()
       require('obsidian-bridge').setup { scroll_sync = true }
+      vim.cmd "ObsidianBridgeOff"
       vim.keymap.set({ 'n' }, '<leader>ot', '<cmd>ObsidianBridgeTelescopeCommand<cr>', { desc = '[O]bsidian [T]elescope' })
     end,
   },

@@ -56,15 +56,67 @@ return {
             params = {
               max_tokens = 8192,
               model = 'claude-3-5-sonnet-latest',
-              system = 'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. Unless modifying the surrounding text, keep newlines where they are: your changes will be diffed with the original. Each change should be discrete and easily understandable from a line-wise diff. Feel free to make larger changes if they constitute real improvements. Be honest. You improve the text in the manner specified by the user, using only the previous instructions as a baseline. Respond only with a markdown code block, with markdown content inside the code block.',
+              system = 'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. When replacing text: unless modifying the surrounding text, keep newlines where they are: your changes will be diffed with the original. Each change should be discrete and easily understandable from a line-wise diff. Feel free to make larger changes if they constitute real improvements. Be honest. You improve the text in the manner specified by the user, using only the previous instructions as a baseline. Respond only with a markdown code block, with markdown content inside the code block.',
             },
             builder = function(input, context)
               local format = require 'model.format.claude'
 
               local theprompt = vim.tbl_extend('force', context.selection and format.build_replace(input, context) or format.build_insert(context), {
-                -- TODO this makes it impossible to get markdown in the response content
-                -- eventually we may want to allow markdown in the code-fenced response
-                stop_sequences = { '```' },
+                stop_sequences = { '\n```' },
+              })
+              return theprompt
+            end,
+          },
+          qf_prose = {
+            provider = claude,
+            mode = mode.INSERT_OR_REPLACE,
+            options = {
+              headers = {
+                ['anthropic-beta'] = 'max-tokens-3-5-sonnet-2024-07-15',
+              },
+              trim_code = true,
+            },
+            params = {
+              max_tokens = 8192,
+              model = 'claude-3-5-sonnet-latest',
+              system = 'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. When replacing text: unless modifying the surrounding text, keep newlines where they are: your changes will be diffed with the original. Each change should be discrete and easily understandable from a line-wise diff. Be honest. Feel free to make larger changes if they constitute real improvements.',
+            },
+            builder = function(input, context)
+              local format = require 'model.format.claude'
+              qf_context = require('model.util.qflist').get_text()
+              if qf_context ~= '' then
+                context.args = 'Claude, here is relevant context from other files:\n' .. qf_context .. context.args
+              end
+
+              local theprompt = vim.tbl_extend('force', context.selection and format.build_replace(input, context) or format.build_insert(context), {
+                stop_sequences = { '\n```' },
+              })
+              return theprompt
+            end,
+          },
+          code_context = {
+            provider = claude,
+            mode = mode.INSERT_OR_REPLACE,
+            options = {
+              headers = {
+                ['anthropic-beta'] = 'max-tokens-3-5-sonnet-2024-07-15',
+              },
+              trim_code = true,
+            },
+            params = {
+              max_tokens = 8192,
+              model = 'claude-3-5-sonnet-latest',
+              system = 'You are an expert coder and an applied mathematician. You know python and lua in detail. In python, you like to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborne from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. If you think you need more context, say so inside of comments inside the code you return.',
+            },
+            builder = function(input, context)
+              local format = require 'model.format.claude'
+              qf_context = require('model.util.qflist').get_text()
+              if qf_context ~= '' then
+                context.args = 'Claude, here is relevant context from other files:\n' .. qf_context .. context.args
+              end
+
+              local theprompt = vim.tbl_extend('force', context.selection and format.build_replace(input, context) or format.build_insert(context), {
+                stop_sequences = { '\n```' },
               })
               return theprompt
             end,
@@ -81,7 +133,7 @@ return {
             params = {
               max_tokens = 8192,
               model = 'claude-3-5-sonnet-latest',
-              system = 'You are an expert programmer. Provide code which should go between the before and after blocks of code. Respond only with a markdown code block. Use comments within the code if explanations are necessary.',
+              system = 'You are an expert programmer. Provide code which should go between the before and after blocks of code. Respond only with a markdown code block. Use comments within the code if explanations are necessary. If the code you want to write is longer than 8192 tokens, then write descriptive pseudocode instead, so that you can deal with each item in seperate prompts later, replacing each one.',
             },
             builder = function(input, context)
               local format = require 'model.format.claude'
@@ -91,7 +143,6 @@ return {
                 -- eventually we may want to allow markdown in the code-fenced response
                 stop_sequences = { '```' },
               })
-              print(vim.inspect(theprompt))
               return theprompt
             end,
           },
