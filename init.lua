@@ -21,6 +21,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 require "setup.telescope"
 
+require "setup.quickfix"
+
 require "setup.treesitter"
 
 require "setup.lsp"
