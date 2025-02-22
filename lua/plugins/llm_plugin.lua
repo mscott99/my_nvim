@@ -20,6 +20,82 @@ return {
       -- local prompts = require('model.util.prompts')
       -- local extract = require('model.prompts.extract')
       -- local consult = require('model.prompts.consult')
+
+      local sse = require 'model.util.sse'
+      local util = require 'model.util'
+
+      ---@class Provider
+      local grok_provider = {
+        request_completion = function(handler, params, options)
+          options = options or {}
+
+          local consume = handler.on_partial
+          local finish = function() end
+
+          if options.trim_code then
+            -- we keep 1 partial in buffer so we can strip the leading newline and trailing markdown block fence
+            local last = nil
+
+            ---@param partial string
+            consume = function(partial)
+              if last then
+                handler.on_partial(last)
+                last = partial
+              else -- strip the first leading newline
+                last = partial:gsub('^\n', '')
+              end
+            end
+
+            finish = function()
+              if last then
+                -- ignore the trailing codefence
+                handler.on_partial(last:gsub('\n```$', ''))
+              end
+            end
+          end
+
+          return sse.curl_client({
+            url = 'https://api.x.ai/v1/chat/completions',
+            headers = vim.tbl_extend('force', {
+              ['Content-Type'] = 'application/json',
+              ['x-api-key'] = util.env 'XAI_API_KEY',
+              -- ['anthropic-beta'] = 'messages-2023-12-15',
+              -- ['anthropic-version'] = '2023-06-01',
+            }, options.headers or {}),
+            body = vim.tbl_deep_extend('force', {
+              max_tokens = 1024, -- required field
+            }, params, { stream = true }),
+          }, {
+            on_message = function(msg)
+              if msg.data == "[DONE]" then
+                finish()
+                return
+              end
+              local data = util.json.decode(msg.data)
+              if data == nil then
+                finish()
+              end
+              if data and #data.choices ~= 0 and data.choices[1].delta ~= nil and data.choices[1].delta.content ~= nil then
+                consume(data.choices[1].delta.content)
+              end
+              if data and #data.choices ~= 0 and data.choices[1].finish_reason == 'stop' then
+                finish()
+              end
+
+              -- if msg.event == 'content_block_delta' then
+              --   consume(data.delta.text)
+              -- elseif msg.event == 'message_delta' then
+              --   util.show(data.usage.output_tokens, 'output tokens')
+              -- elseif msg.event == 'message_stop' then
+              --   finish()
+              -- end
+            end,
+            on_error = handler.on_error,
+            on_other = handler.on_error,
+            on_exit = handler.on_finish,
+          })
+        end,
+      }
       require('model').setup {
         chats = {
           claude_chat = {
@@ -43,22 +119,19 @@ return {
             end,
           },
           grok_chat = {
-            provider = claude, -- We'll reuse claude's SSE handling
+            provider = grok_provider,
             system = 'You are a helpful assistant. You are confident in your answers and strive to share insightful information. You aim to provide thorough explanations while remaining concise.',
             create = function()
               return ''
             end,
             run = function(messages, config)
-              -- Comments: Based on the Grok API info provided, we need to:
-              -- - Change the endpoint/auth
-              -- - Update model name
-              -- - Keep compatible parameters
+              -- Based on Anthropic provider format
               return {
-                system = config.system,
+                system = config.system, -- Top-level system parameter
                 messages = messages,
-                model = 'grok-3', -- Using latest model
-                max_tokens = 4096, -- Grok-3's typical context length
-                temperature = 0.7, -- Slightly higher for more creative responses
+                model = 'grok-2-latest', -- Adapt to Grok model name
+                max_tokens = 1028,
+                temperature = 0.7,
                 top_p = 0.95,
               }
             end,
@@ -127,7 +200,7 @@ return {
             params = {
               max_tokens = 8192,
               model = 'claude-3-5-sonnet-latest',
-              system = 'You are an expert coder and an applied mathematician. You know python and lua in detail. In python, you like to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborne from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. If you think you need more context, say so inside of comments inside the code you return.',
+              system = 'You are an expert coder and an applied mathematician. You know python and lua in detail. In python, you like to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborne from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. If you think you need more context, say so inside of comments inside the code you return. If you realize that in the prompt the user is expecting a different methodology than the optimal one, go ahead with the optimal version and explain why in the comments of the code.',
             },
             builder = function(input, context)
               local format = require 'model.format.claude'
