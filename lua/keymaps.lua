@@ -5,6 +5,48 @@
 
 -- Function to enhance numbered jumps
 -- Function to enhance numbered jumps
+--
+
+function ParseDiffToQuickfix()
+    local current_file = ''
+    local qf_list = {}
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+    for _, line in ipairs(lines) do
+        -- Extract file name from '+++ b/' lines
+        local file_match = string.match(line, "^%+%+%+ b/(.+)")
+        if file_match then
+            current_file = string.gsub(file_match, "\r$", "")
+        -- Parse hunk headers starting with '@@'
+        elseif string.match(line, "^@@") then
+            if current_file == '' then
+                goto continue -- Skip if no file context yet
+            end
+
+            -- Extract the '+start,count' part from the hunk header
+            local new_range = string.match(line, "@@%s+%-%d+,%d+%s+%+(%d+,%d+)%s+@@")
+            if not new_range then
+                goto continue -- Skip if hunk header is malformed
+            end
+
+            -- Get the starting line number from '+start,count'
+            local new_start_str = string.match(new_range, "^(%d+),")
+            local new_start_num = tonumber(new_start_str)
+            if new_start_num then
+                table.insert(qf_list, {
+                    filename = current_file,
+                    lnum = new_start_num,
+                    text = "Changed between commits"
+                })
+            end
+        end
+        ::continue::
+    end
+
+    vim.fn.setqflist(qf_list)
+end
+
+vim.cmd "command! -nargs=+ GdiffToQuickfix execute 'enew | r !git diff' <q-args> '| call ParseDiffToQuickfix() | copen'"
 
 vim.cmd [[nnoremap <expr> j (v:count > 0 ? "m'" . v:count : '') . 'j'
 nnoremap <expr> k (v:count > 0 ? "m'" . v:count : '') . 'k']]

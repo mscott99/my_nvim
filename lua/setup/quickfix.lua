@@ -28,6 +28,8 @@ end
 -- Set keymap to open quickfix list in telescope
 vim.keymap.set('n', '<leader>fq', find_in_quickfixlist, { desc = '[F]ind in [Q]uickfix list' })
 
+local builtin = require 'telescope.builtin'
+
 local live_grep_qflist = function()
   local qflist = vim.fn.getqflist()
   local filetable = {}
@@ -93,7 +95,7 @@ local function save_quickfix_list()
     if vim.fn.filereadable(filepath) == 1 then
       vim.ui.input({
         prompt = string.format("File '%s' exists. Overwrite? (y/n): ", filename),
-        default = 'n',
+        default = 'y',
       }, function(response)
         if not response or response:lower() ~= 'y' then
           vim.notify('Save aborted', vim.log.levels.INFO)

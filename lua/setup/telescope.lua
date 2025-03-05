@@ -86,10 +86,6 @@ local function oldfiles_in_git_dir()
   end
 end
 
-local builtin = require 'telescope.builtin'
-
-
-
 vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 
 -- See `:help telescope.builtin`
@@ -199,9 +195,9 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 -- Search for mchat files in local .chats directory of git root
 local function find_mchat_files()
   local git_root = find_git_root()
-  local global_chats = vim.fn.expand('~/.config/chats')
+  local global_chats = vim.fn.expand '~/.config/chats'
   local chats_dir = git_root .. '/.chats'
-  
+
   -- Create global chats directory if it doesn't exist
   if vim.fn.isdirectory(global_chats) == 0 then
     vim.fn.mkdir(global_chats, 'p')
@@ -209,7 +205,7 @@ local function find_mchat_files()
 
   -- Use telescope builtin find_files to search .chats directory
   require('telescope.builtin').find_files {
-    search_dirs = { chats_dir, global_chats },  -- Order matters: local chats will appear first
+    search_dirs = { chats_dir, global_chats }, -- Order matters: local chats will appear first
     prompt_title = 'Find Chat Files',
     sorter = require('telescope.sorters').get_generic_fuzzy_sorter {
       -- Custom scoring function to prioritize local chats
@@ -217,13 +213,13 @@ local function find_mchat_files()
         local score = require('telescope.sorters').get_generic_fuzzy_sorter().scoring_function(_, prompt, line)
         -- If file is from local .chats directory, boost its score
         if vim.startswith(line, chats_dir) then
-          score = score * 0.5  -- Lower score means higher priority
+          score = score * 0.5 -- Lower score means higher priority
         end
         return score
-      end
+      end,
     },
     attach_mappings = function(prompt_bufnr, map)
-      local action_set = require('telescope.actions.set')
+      local action_set = require 'telescope.actions.set'
       action_set.select:replace(function()
         local selection = require('telescope.actions.state').get_selected_entry()
         require('telescope.actions').close(prompt_bufnr)
@@ -238,4 +234,3 @@ end
 
 -- Add keybinding
 vim.keymap.set('n', '<leader>fd', find_mchat_files, { desc = '[F]ind [C]hat files' })
-

@@ -33,6 +33,10 @@ require "setup.export_obsidian"
 
 require "setup.utils"
 
+require "setup.obsidian"
+
 -- require "llm.llm"
 
 require "llm.llm_commands"
+
+require "llm.llm_copy"

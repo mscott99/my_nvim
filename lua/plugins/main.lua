@@ -195,10 +195,10 @@ return {
         let g:sandwich#recipes += [{'buns': ['\{', '\}'], 'input':['s']}]
         let g:sandwich#recipes += [{'buns': ['\left\{', '\right\}'], 'input':['S']}]
         let g:sandwich#recipes += [{'buns': ['\left\|', '\right\|'], 'input':['N']}]
+        let g:sandwich#recipes += [{'buns': ['\left|', '\right|'], 'input':['L']}]
         let g:sandwich#recipes += [{'buns': ["[[", "]\]"], 'input':['w']}]
         let g:sandwich#recipes += [{'buns': ['\langle ', '\rangle '], 'input':['a']}]
         let g:sandwich#recipes += [{'buns': ['\left\langle ', '\right\rangle'], 'input':['A']}]
-        let g:sandwich#recipes += [{'buns': ['\left| ', '\right|'], 'input':['L']}]
       ]]
     end,
   },

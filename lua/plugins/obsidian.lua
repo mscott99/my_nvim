@@ -1,7 +1,7 @@
 return {
   {
     'oflisback/obsidian-bridge.nvim',
-    enabled =true,
+    enabled = true,
     lazy = true,
     event = 'BufReadPre /Users/matthewscott/Obsidian/**.md',
     -- keys = {
@@ -11,7 +11,7 @@ return {
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     config = function()
       require('obsidian-bridge').setup { scroll_sync = true }
-      vim.cmd "ObsidianBridgeOff"
+      vim.cmd 'ObsidianBridgeOff'
       vim.keymap.set({ 'n' }, '<leader>ot', '<cmd>ObsidianBridgeTelescopeCommand<cr>', { desc = '[O]bsidian [T]elescope' })
     end,
   },
@@ -111,6 +111,28 @@ return {
         end
         return out
       end,
+      mappings = {
+        ['gf'] = {
+          action = function()
+            return require('obsidian').util.gf_passthrough()
+          end,
+          opts = { noremap = false, expr = true, buffer = true },
+        },
+        ['<leader>ch'] = {
+          action = function()
+            return require('obsidian').util.toggle_checkbox()
+          end,
+          opts = { buffer = true },
+        },
+        ['<cr>'] = {
+          action = function()
+            if require('obsidian').util.cursor_on_markdown_link(nil, nil, true) then
+              return '<cmd>ObsidianFollowLink<CR>'
+            end
+          end,
+          opts = { buffer = true, expr = true },
+        },
+      },
 
       -- -- Optional, for templates (see below).
       -- templates = {

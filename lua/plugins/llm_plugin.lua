@@ -7,9 +7,9 @@ return {
     end,
     ft = 'mchat',
     keys = {
-      { '<C-m>d', ':Mdelete<cr>', mode = 'n' },
-      { '<C-m>s', ':Mselect<cr>', mode = 'n' },
-      { '<C-m><space>', ':Mchat<cr>', mode = 'n' },
+      -- { '<C-m>d', ':Mdelete<cr>', mode = 'n' },
+      -- { '<C-m>s', ':Mselect<cr>', mode = 'n' },
+      -- { '<C-Enter>', ':Mchat<cr>', mode = 'n' },
     },
     config = function()
       local claude = require 'model.providers.anthropic'
@@ -118,6 +118,26 @@ return {
               }
             end,
           },
+          claude_code = {
+            provider = claude,
+            system = 'You are an expert programmer who knows about Obsidian. You are good a building Obisidian plugins and doing data science with python.',
+            create = function()
+              return ''
+            end,
+            run = function(messages, config)
+              local msg_array = {}
+              -- Add user and assistant messages only
+              -- local system_msg = config.system
+              return {
+                system = config.system, -- Top-level system parameter
+                messages = messages,
+                model = 'claude-2',
+                max_tokens = 256,
+                temperature = 0.5,
+                top_p = 0.95,
+              }
+            end,
+          },
           grok_chat = {
             provider = grok_provider,
             system = 'You are a helpful assistant. You are confident in your answers and strive to share insightful information. You aim to provide thorough explanations while remaining concise.',
@@ -138,6 +158,7 @@ return {
           },
         },
         prompts = {
+          commit = require("model.prompts.starters").commit,
           minor_prose = {
             provider = claude,
             mode = mode.INSERT_OR_REPLACE,
@@ -149,7 +170,7 @@ return {
             },
             params = {
               max_tokens = 8192,
-              model = 'claude-3-5-sonnet-latest',
+              model = 'claude-3-7-sonnet-latest',
               system = 'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. When replacing text: unless modifying the surrounding text, keep newlines where they are: your changes will be diffed with the original. Each change should be discrete and easily understandable from a line-wise diff. Feel free to make larger changes if they constitute real improvements. Be honest. You improve the text in the manner specified by the user, using only the previous instructions as a baseline. Respond only with a markdown code block, with markdown content inside the code block.',
             },
             builder = function(input, context)
@@ -165,15 +186,15 @@ return {
             provider = claude,
             mode = mode.INSERT_OR_REPLACE,
             options = {
-              headers = {
-                ['anthropic-beta'] = 'max-tokens-3-5-sonnet-2024-07-15',
-              },
+              -- headers = {
+              --   ['anthropic-beta'] = 'max-tokens-3-7-sonnet-2024-07-15',
+              -- },
               trim_code = true,
             },
             params = {
               max_tokens = 8192,
-              model = 'claude-3-5-sonnet-latest',
-              system = 'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. When replacing text: unless modifying the surrounding text, keep newlines where they are: your changes will be diffed with the original. Each change should be discrete and easily understandable from a line-wise diff. Be honest. Feel free to make larger changes if they constitute real improvements.',
+              model = 'claude-3-7-sonnet-latest',
+              system = 'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. When replacing text: unless modifying the surrounding text, keep newlines where they are: your changes will be diffed with the original. Each change should be discrete and easily understandable from a line-wise diff. Be honest. Feel free to make larger changes if they constitute real improvements. You usually write in markdown. When you do, write all math in latex surrounded by $...$ for inline and $$...$$ for display math. You can use the align environment in display math.',
             },
             builder = function(input, context)
               local format = require 'model.format.claude'

@@ -150,7 +150,7 @@ return function(is_math, not_math)
     ),
     s(
       { trig = "sphere", wordTrig = false, name = "sphere", condition = is_math, snippetType = "autosnippet" },
-      fmta([[\mathbb{S}^{<>-1}]], { i(1, "n") })
+      fmta([[\sphere{<>}]], { i(1, "n") })
     ),
   }
 
