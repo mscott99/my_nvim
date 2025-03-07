@@ -44,8 +44,20 @@ local live_grep_qflist = function()
     end
   end
 
-  builtin.live_grep { search_dirs = filetable, use_regex = true }
+  -- Configure live_grep with multiline support
+  builtin.live_grep {
+    search_dirs = filetable,
+    use_regex = true,
+    additional_args = function()
+      return {
+        "--multiline",        -- Enable multiline matching
+        "--multiline-dotall", -- Make dot match newlines
+        "-U"                  -- Enable unicode support
+      }
+    end
+  }
 end
+
 
 vim.keymap.set('n', '<leader>sq', live_grep_qflist, { desc = '[S]earch [Q]uickfix list' })
 
