@@ -20,6 +20,8 @@ return function(is_math, not_math)
     -- s({trig = "ce", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
     -- s({trig = ":=", condition = is_math, wordTrig = true, snippetType = "autosnippet"}, {t("\\colonequals")}),
     s({ trig = "\\\\\\", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\setminus ") }),
+    s({ trig = "par", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\parallel ") }),
+    s({ trig = "prop", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\propto ") }),
     s({ trig = "||", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t("\\mid ") }),
     s({ trig = "ems", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\emptyset") }),
     s({ trig = "mf", condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\measfield") }),
@@ -114,15 +116,16 @@ return function(is_math, not_math)
         return snip.captures[1] .. "^3"
       end) }
     ), -- make another one for letters where it is a wordTrig.
-    s({
-      trig = "([^ %=-+_&$./^,%d{([]+)([%d])",
-      regTrig = true,
-      priority = 300,
-      condition = is_math,
-      snippetType = "autosnippet",
-    }, { f(function(_, snip)
-      return snip.captures[1] .. "_" .. snip.captures[2]
-    end) }),
+    -- The below triggers too much.
+    -- s({
+    --   trig = "([^ %=-+_&$./^,%d{([]+)([%d])",
+    --   regTrig = true,
+    --   priority = 300,
+    --   condition = is_math,
+    --   snippetType = "autosnippet",
+    -- }, { f(function(_, snip)
+    --   return snip.captures[1] .. "_" .. snip.captures[2]
+    -- end) }),
     -- s({trig = "([^ ij%d%p{([])([ijm])", regTrig=true, priority = 300, condition= is_math, snippetType="autosnippet"},
     --     {f(function(_, snip)
     --       return snip.captures[1] .. "_" .. snip.captures[2]

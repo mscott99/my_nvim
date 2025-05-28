@@ -104,7 +104,7 @@ M.loose_grab = function()
 end
 
 M.strict_grab = function()
-  return M.grab_latex_at_cursor "[%s${}%[%]%(%)%]_%-%+%|]$"
+  return M.grab_latex_at_cursor "[%s${}%[%]%(%)%]_%-%+%|:;]$"
 end
 
 function M.get_visual(_, parent) -- use with dynamic node d(1, get_visual)

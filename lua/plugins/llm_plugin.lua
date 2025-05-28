@@ -24,6 +24,8 @@ return {
       local sse = require 'model.util.sse'
       local util = require 'model.util'
 
+      local gemini_provider = require 'model.providers.gemini'
+
       ---@class Provider
       local grok_provider = {
         request_completion = function(handler, params, options)
@@ -140,7 +142,7 @@ return {
           },
           grok_chat = {
             provider = grok_provider,
-            system = 'You are a helpful assistant. You are confident in your answers and strive to share insightful information. You aim to provide thorough explanations while remaining concise.',
+            system = 'You are a helpful assistant, expert in programming, neovim, python and mathematical ideas like compressed sensing.Your answers hold a single idea (at most 2), or a single step, so that I may respond quickly.',
             create = function()
               return ''
             end,
@@ -149,7 +151,7 @@ return {
               return {
                 system = config.system, -- Top-level system parameter
                 messages = messages,
-                model = 'grok-2-latest', -- Adapt to Grok model name
+                model = 'grok-3-latest', -- Adapt to Grok model name
                 max_tokens = 1028,
                 temperature = 0.7,
                 top_p = 0.95,
@@ -210,24 +212,25 @@ return {
             end,
           },
           code_context = {
-            provider = claude,
+            provider = grok_provider,
             mode = mode.INSERT_OR_REPLACE,
             options = {
               headers = {
-                ['anthropic-beta'] = 'max-tokens-3-5-sonnet-2024-07-15',
+                -- ['anthropic-beta'] = 'max-tokens-3-5-sonnet-2024-07-15',
               },
               trim_code = true,
             },
             params = {
               max_tokens = 8192,
-              model = 'claude-3-5-sonnet-latest',
-              system = 'You are an expert coder and an applied mathematician. You know python and lua in detail. In python, you like to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborne from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. If you think you need more context, say so inside of comments inside the code you return. If you realize that in the prompt the user is expecting a different methodology than the optimal one, go ahead with the optimal version and explain why in the comments of the code.',
+              -- model = 'claude-3-5-sonnet-latest',
+              model = 'grok-3-latest',
+              system = 'You are an expert coder and an applied mathematician. You know python and lua in detail. In python, you like to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborn from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. If you think you need more context, say so inside of comments inside the code you return. If you realize that in the prompt the user is expecting a different methodology than the optimal one, go ahead with the optimal version and explain why in the comments of the code.',
             },
             builder = function(input, context)
               local format = require 'model.format.claude'
               qf_context = require('model.util.qflist').get_text()
               if qf_context ~= '' then
-                context.args = 'Claude, here is relevant context from other files:\n' .. qf_context .. context.args
+                context.args = 'Gemini, here is relevant context from other files:\n' .. qf_context .. context.args
               end
 
               local theprompt = vim.tbl_extend('force', context.selection and format.build_replace(input, context) or format.build_insert(context), {

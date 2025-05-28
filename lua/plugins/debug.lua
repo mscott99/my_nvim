@@ -26,11 +26,11 @@ return {
     lazy = true,
     ft = 'python',
     dependencies = { 'mfussenegger/nvim-dap' },
-    -- config = function()
-    --   local dpython = require('dap-python')
-    --   dpython.setup("./.venv/bin/python3")
-    --   vim.keymap.set('n', '<leader>dt', dpython.test_method, { desc = 'Debug: Test Method' })
-    -- end,
+    config = function()
+      local dpython = require('dap-python')
+      -- dpython.setup("/Users/matthewscott/.local/share/my_nvim/mason/packages/debugpy/venv/bin/python3")
+      vim.keymap.set('n', '<leader>dt', dpython.test_method, { desc = 'Debug: Test Method' })
+    end,
   },
   {
     -- NOTE: Yes, you can install new plugins here!
