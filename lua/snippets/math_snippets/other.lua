@@ -170,7 +170,7 @@ return function(is_math, not_math)
         regTrig = true, condition = is_math, snippetType = "autosnippet" }, { t("\\" .. letter .. post.val) })
   end
 
-  local post_snips = doubleMap(greek_letters, posts, greek_post)
+  local post_snips = doubleMap(all_greeks , posts, greek_post)
 
   local raise_trigs = map(greek_letters, function(letter)
     return s({ trig = "\\" .. letter .. " " .. "rs", priority = 1001, regTrig = true, condition = is_math, snippetType = "autosnippet" }, { t("\\" .. letter .. "^{"), i(1), t("}") })

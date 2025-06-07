@@ -224,13 +224,14 @@ return {
               max_tokens = 8192,
               -- model = 'claude-3-5-sonnet-latest',
               model = 'grok-3-latest',
-              system = 'You are an expert coder and an applied mathematician. You know python and lua in detail. In python, you like to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborn from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. If you think you need more context, say so inside of comments inside the code you return. If you realize that in the prompt the user is expecting a different methodology than the optimal one, go ahead with the optimal version and explain why in the comments of the code.',
+              system = 'You are a reliable and tasteful coding tool, that re-writes blocks of code very well. As a tool, you are only able to write code in a coding language. You never use the character `. Therefore you cannot write code block quotes, or comment on the code you wrote. You know python and lua in detail. In python, you tend to build experiments by putting them as rows of a dataframe. You prioritize plotting with seaborn from dataframes. In lua, you are great at making neovim configs that are simple. You do not add any additional features than what is required, unless it is error checking. You keep comments minimal, and use very few blank lines. If you think you need more context, say so inside of comments inside the code you return. If you realize that in the prompt the user is expecting a different methodology than the optimal one, go ahead with the optimal version and explain why in the comments of the code.',
             },
             builder = function(input, context)
+              input = input .. "\n\n only output code and nothing but code. Every character you write is piped to a file, any additional content will create errors and frustrate the user."
               local format = require 'model.format.claude'
               qf_context = require('model.util.qflist').get_text()
               if qf_context ~= '' then
-                context.args = 'Gemini, here is relevant context from other files:\n' .. qf_context .. context.args
+                context.args = 'Grok, here is relevant context from other files:\n' .. qf_context .. context.args
               end
 
               local theprompt = vim.tbl_extend('force', context.selection and format.build_replace(input, context) or format.build_insert(context), {
