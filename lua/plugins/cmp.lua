@@ -16,7 +16,7 @@ end
 
 -- Map the toggle function to a key
 vim.api.nvim_create_user_command('ToggleCopilot', toggle_copilot, {})
-vim.keymap.set('n', '<leader>tc', ':ToggleCopilot<CR>', { desc = '[T]oggle [C]opilot' })
+-- vim.keymap.set('n', '<leader>tc', ':ToggleCopilot<CR>', { desc = '[T]oggle [C]opilot' })
 
 return {
   {

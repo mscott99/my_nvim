@@ -1,1 +1,1 @@
-vim.keymap.set('n', '<Space>tp', ToggleTexlabExecutable, {buffer=true, desc="[T]oggle [P]df"})
+vim.keymap.set('n', '<Space>tl', ToggleTexlabExecutable, {buffer=true, desc="Toggle [T]ex[L]ab"})

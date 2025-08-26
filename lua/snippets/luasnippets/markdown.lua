@@ -6,7 +6,7 @@ local unflattened = {
   require("snippets.math_snippets.no_backslash"),
   require("snippets.math_snippets.other"),
   require("snippets.math_snippets.surrounds"),
-  require("snippets.math_snippets.subscripts"),
+  -- require("snippets.math_snippets.subscripts"),
 }
 
 local map = require("snippets.utils").map

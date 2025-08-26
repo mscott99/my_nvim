@@ -76,7 +76,18 @@ local servers = {
       language = 'en-US',
       dictionary = {
         ['en-US'] = {
+          'infimum',
+          'supremum',
+          'WLOG',
+          'normals',
+          'summand',
           'preconditioner',
+          'semidefinite',
+          'nonsmooth',
+          'subdifferential',
+          'subdifferentials',
+          'subgradient',
+          'subgradients',
           'Longform',
           'Zotero',
           'url',
@@ -159,22 +170,47 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
+    -- Default setup for all servers
+    local server_config = {
       capabilities = capabilities,
       on_attach = on_attach,
-      settings = servers[server_name],
+      settings = servers[server_name] or {},
       filetypes = (servers[server_name] or {}).filetypes,
     }
+
+    -- Custom setup for ltex to suppress status messages
+    if server_name == "ltex" then
+      server_config.handlers = {
+        ["$/progress"] = function(_, result, ctx)
+          -- Suppress progress messages containing "Checking document"
+          if result.value.message and result.value.message:match("Checking document") then
+            return -- Ignore the message
+          end
+          -- Optionally, pass other progress messages to default handler
+          -- vim.notify(result.value.message, vim.log.levels.INFO)
+        end,
+        ["window/showMessage"] = function(_, result, _)
+          -- Suppress showMessage notifications containing "Checking document"
+          if result.message:match("Checking document") then
+            return -- Ignore the message
+          end
+          -- vim.notify(result.message, vim.log.levels.INFO)
+        end,
+      }
+    end
+
+    -- Apply the configuration
+    require('lspconfig')[server_name].setup(server_config)
   end,
 }
 
 require('lspconfig').sourcekit.setup {
-    capabilities = {
-      workspace = {
-        didChangeWatchedFiles = {
-          dynamicRegistration = true,
-        },
+  capabilities = {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
       },
     },
+  },
 }
 require('lspconfig').mojo.setup {}

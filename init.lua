@@ -40,3 +40,5 @@ require "setup.obsidian"
 require "llm.llm_commands"
 
 require "llm.llm_copy"
+
+require "setup.git"

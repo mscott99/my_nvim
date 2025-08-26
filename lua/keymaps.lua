@@ -162,6 +162,26 @@ vim.keymap.set({ 'n', 'i' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
 
 vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Esc><cmd>noh<cr>')
 
+-- Tab navigation
+vim.keymap.set('n', '<leader>tn', '<cmd>tabnext<cr>', {desc = '[T]ab [N]ext'})
+vim.keymap.set('n', '<leader>tp', '<cmd>tabprevious<cr>', {desc = '[T]ab [P]revious'})
+vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<cr>', {desc = '[T]ab [C]lose'})
+vim.keymap.set('n', '<leader>te', '<cmd>tabnew<cr>', {desc = '[T]ab [E]xtend'})
+
+
+-- Function to toggle diff mode for the current buffer
+function ToggleDiff()
+  local bufnr = vim.api.nvim_get_current_win()
+  local is_diff = vim.api.nvim_get_option_value("diff", { win = bufnr })
+  if is_diff then
+    vim.cmd("diffoff")
+  else
+    vim.cmd("diffthis")
+  end
+end
+-- toggle window diff
+vim.keymap.set('n', '<leader>df', ToggleDiff, {desc='Toggle [D]i[F]f'})
+
 -- Set up an autocommand for a specific filetype
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'markdown', -- Replace with the filetype you want, e.g., "python", "markdown", etc.
@@ -170,6 +190,8 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.keymap.set({ 'n', 'i' }, '<Esc>', '<Esc><cmd>noh | w<cr>', { buffer = true })
   end,
 })
+
+vim.keymap.set('n', '<leader>x', [["_x]], {desc='void x'})
 
 -- funky keymaps
 
