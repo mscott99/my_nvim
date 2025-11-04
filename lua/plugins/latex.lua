@@ -54,10 +54,12 @@ return {
               executable = executable,
               args = args,
             },
-            latexFormatter = 'latexindent',
-            latexindent = {
-              modifyLineBreaks = false,
-            },
+            -- handled by conform
+            -- latexFormatter = 'latexindent',
+            -- latexindent = {
+            --   modifyLineBreaks = false,
+            --   defaultIndent = "    ",
+            -- },
             chktex = {
               onEdit = false,
               onOpenAndSave = false,

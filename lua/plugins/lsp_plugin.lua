@@ -64,6 +64,13 @@ return {
         python = { 'autopep8' },
       },
       formatters = {
+        latexindent = {
+          command = 'latexindent',
+          args = {
+            "-y=defaultIndent: '    '",
+          },
+          stdin = true,
+        }
         -- prettier = {
         --   command = 'prettier',
         --   args = {
