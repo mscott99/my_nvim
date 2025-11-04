@@ -71,9 +71,9 @@ $$
     s(
       { trig = "beg", wordTrig = true, name = "environment", condition = is_math },
       fmta(
-        [[\begin{<>
+        [[\begin{<>}
    <>
-\end<>]],
+\end{<>}]],
         { i(1), i(2), rep(1) }
       )
     ),

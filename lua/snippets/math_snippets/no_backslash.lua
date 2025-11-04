@@ -97,12 +97,17 @@ return function(is_math, not_math)
     return s({ trig = name, wordTrig = false, condition = is_math, snippetType = 'autosnippet' }, { t('\\' .. name) })
   end
 
+  local function prefix_backslash_check_space(name)
+    return s({ trig = ' ' .. name, wordTrig = false, priority= 1001, condition = is_math, snippetType = 'autosnippet' }, { t(' \\' .. name .. ' ') })
+  end
+
   local function prefix_backslash_and_space(name)
     return s({ trig = name, wordTrig = false, condition = is_math, snippetType = 'autosnippet' }, { t(' \\' .. name .. ' ') })
   end
 
   return concat {
     map(backslash_functions, function_backslash),
+    map(no_backslash_add_space, prefix_backslash_check_space),
     map(no_backslash_add_space, prefix_backslash_and_space),
     map(no_backslash, prefix_backslash),
   }

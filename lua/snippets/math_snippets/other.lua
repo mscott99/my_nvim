@@ -53,6 +53,8 @@ return function(is_math, not_math)
     s({ trig = "inn", condition = is_math, wordTrig=false, snippetType = "autosnippet" }, { t(" \\in ") }),
     s({ trig = "wt", condition = is_math, wordTrig = true, priority=2000, snippetType = "autosnippet" }, { t("\\subseteq ") }),
     s({ trig = "wt", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\subseteq ") }),
+    s({ trig = "wnt", condition = is_math, wordTrig = true, priority=2000, snippetType = "autosnippet" }, { t("\\subsetneq ") }),
+    s({ trig = "wnt", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\subsetneq ") }),
     s({ trig = "apx", priority = 2000, condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\approx ") }),
     s({ trig = "apx", condition = is_math, wordTrig = false, snippetType = "autosnippet" }, { t(" \\approx ") }),
     s({ trig = "imp", priority=2000, condition = is_math, wordTrig = true, snippetType = "autosnippet" }, { t("\\implies ") }),
