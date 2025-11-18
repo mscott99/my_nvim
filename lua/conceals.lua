@@ -103,13 +103,23 @@ local function setup_custom_conceals()
 
     syntax match texMathCmd '\\measfield' conceal cchar=𝕂
     syntax match texMathCmd '\\field' conceal cchar=ℝ 
+
+    syntax region mdAtLink
+          \ start='\[\[@' end='\]\]'
+          \ contains=mdAtOpen,mdAtClose,mdAtFirst,mdAtRest
+          \ concealends keepend
+
+    syntax match mdAtOpen '\[\[' contained conceal cchar=[
+    syntax match mdAtClose '\]\]' contained conceal cchar=]
+    syntax match mdAtFirst '@\w\w\zs\w\+' contained conceal
     ]]
+
   --
   -- Copilot give me math bold C like blackboard for complex: 𝕔
   -- And reals: ℝ
   -- Additional syntax matches can be added here
   -- 𝝦 𝝧 𝝨 𝝩 𝝪 𝝫 𝝬 𝝭 𝝮
-  -- 
+  --
 end
 
 vim.cmd [[

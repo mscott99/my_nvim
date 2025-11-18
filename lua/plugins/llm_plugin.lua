@@ -1,5 +1,35 @@
 return {
   {
+    'mozanunal/sllm.nvim',
+    enabled = true,
+    lazy = false,
+    dependencies = { 'echasnovski/mini.nvim' },
+    config = function()
+      require('sllm').setup {
+        llm_cmd = 'llm', -- command or path for the llm CLI
+        default_model = 'xAI/grok-4-fast-reasoning', -- default llm model (set to "default" to use llm's default model)
+        show_usage = false, -- append usage stats to responses
+        on_start_new_chat = true, -- start fresh chat on setup
+        reset_ctx_each_prompt = false, -- clear file context each ask
+        window_type = 'vertical', -- Default. Options: "vertical", "horizontal", "float"
+        -- function for item selection (like vim.ui.select)
+        pick_func = require('mini.pick').ui_select,
+        -- function for notifications (like vim.notify)
+        notify_func = require('mini.notify').make_notify(),
+        -- function for inputs (like vim.ui.input)
+        input_func = vim.ui.input,
+        -- See the "Customizing Keymaps" section for more details
+        keymaps = {
+          -- Change a default keymap
+          ask_llm = '<leader>sb',
+          -- Disable a default keymap
+          add_url_to_ctx = false,
+          -- Other keymaps will use their default values
+        },
+      }
+    end,
+  },
+  {
     'gsuuon/model.nvim',
     cmd = { 'M', 'Model', 'Mchat' },
     init = function()
@@ -144,17 +174,17 @@ return {
             provider = grok_provider,
             mode = mode.INSERT_OR_REPLACE,
             options = {
-              trim_code = true,
+              -- trim_code = true,
             },
             params = {
               max_tokens = 8192,
-              model = 'grok-3',
+              model = 'grok-4-fast-non-reasoning',
               temperature = 0.5,
               top_p = 0.95,
             },
             builder = function(input, context)
               local system =
-                'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. Each change should be discrete and easily understandable from a line-wise diff. Do not modify the newlines from the original. Seek truth, stay honest, make something beautiful. Feel free to make larger changes if they constitute real improvements. You usually write in markdown. When you do, write all math in latex surrounded by $...$ for inline and $$...$$ for display math. You can use the align environment in display math. Do not add extra newlines or blank lines unless absolutely necessary for clarity or structure. Preserve the original line breaks and avoid introducing additional ones. Respond only with the improved text. Do not use markdown code blocks, backticks, or any additional text.'
+                'You are an academic writer and an applied mathematician. You know english grammar very well. You only use fancy words if their meaning is accurate and helpful, and you match the style of the surrounding text. Each change should be discrete and easily understandable from a line-wise diff in git. Do not modify the newlines from the original. Seek truth, stay honest, make something beautiful. Feel free to make larger changes if they constitute real improvements. You usually write in markdown. When you do, write all math in latex surrounded by $...$ for inline and $$...$$ for display math. You can use the align environment in display math. Do not add extra newlines or blank lines unless absolutely necessary for clarity or structure. Preserve the original line breaks and avoid introducing additional ones. Respond only with the improved text. Do not use markdown code blocks, backticks, or any additional text.'
               local user_content = 'Improve the following text:\n' .. input
               if not context.selection then
                 user_content = input -- For insert, use args/buffer as is
@@ -180,7 +210,7 @@ return {
             },
             params = {
               max_tokens = 8192,
-              model = 'grok-4',
+              model = 'grok-4-fast-non-reasoning',
               temperature = 0.5,
               top_p = 0.95,
             },
@@ -202,7 +232,7 @@ return {
               }
               return {
                 messages = messages,
-                model = 'grok-4',
+                model = 'grok-4-fast-non-reasoning',
                 max_tokens = 8192,
                 temperature = 0.5,
                 top_p = 0.95,

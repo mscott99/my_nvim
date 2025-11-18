@@ -1,29 +1,23 @@
---  This function gets run when an LSP connects to a particular buffer.
+-- This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
     end
-
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
-
   nmap('<leader>cr', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
   nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Document [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
-
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
@@ -31,13 +25,11 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
-
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
 end
-
 -- document existing key chains
 require('which-key').register {
   ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
@@ -53,20 +45,17 @@ require('which-key').register({
   ['<leader>'] = { name = 'VISUAL <leader>' },
   ['<leader>h'] = { 'Git [H]unk' },
 }, { mode = 'v' })
-
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require('mason').setup()
-require('mason-lspconfig').setup()
-
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local servers = {
   pyright = {},
   julials = {},
   -- typst_lsp = {
-  --   settings = {
-  --     exportPdf = 'never',
-  --   },
+  -- settings = {
+  -- exportPdf = 'never',
+  -- },
   -- },
   ts_ls = {},
   ltex = {
@@ -154,63 +143,57 @@ local servers = {
     },
   },
 }
-
 -- Setup neovim lua configuration
 -- require('neodev').setup()
-
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
--- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
-
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    -- Default setup for all servers
-    local server_config = {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name] or {},
-      filetypes = (servers[server_name] or {}).filetypes,
+-- Now manually configure each server (replaces setup_handlers)
+for server_name, server_settings in pairs(servers) do
+  -- Default setup for all servers
+  local server_config = {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = server_settings or {},
+    filetypes = (server_settings or {}).filetypes,
+  }
+  -- Custom setup for ltex to suppress status messages
+  if server_name == "ltex" then
+    server_config.handlers = {
+      ["$/progress"] = function(_, result, ctx)
+        -- Suppress progress messages containing "Checking document"
+        if result.value.message and result.value.message:match("Checking document") then
+          return -- Ignore the message
+        end
+        -- Optionally, pass other progress messages to default handler
+        -- vim.notify(result.value.message, vim.log.levels.INFO)
+      end,
+      ["window/showMessage"] = function(_, result, _)
+        -- Suppress showMessage notifications containing "Checking document"
+        if result.message:match("Checking document") then
+          return -- Ignore the message
+        end
+        -- vim.notify(result.message, vim.log.levels.INFO)
+      end,
     }
-
-    -- Custom setup for ltex to suppress status messages
-    if server_name == "ltex" then
-      server_config.handlers = {
-        ["$/progress"] = function(_, result, ctx)
-          -- Suppress progress messages containing "Checking document"
-          if result.value.message and result.value.message:match("Checking document") then
-            return -- Ignore the message
-          end
-          -- Optionally, pass other progress messages to default handler
-          -- vim.notify(result.value.message, vim.log.levels.INFO)
-        end,
-        ["window/showMessage"] = function(_, result, _)
-          -- Suppress showMessage notifications containing "Checking document"
-          if result.message:match("Checking document") then
-            return -- Ignore the message
-          end
-          -- vim.notify(result.message, vim.log.levels.INFO)
-        end,
-      }
-    end
-
-    -- Apply the configuration
-    require('lspconfig')[server_name].setup(server_config)
-  end,
-}
-
-require('lspconfig').sourcekit.setup {
-  capabilities = {
+  end
+  -- Apply the configuration
+  vim.lsp.config(server_name, server_config)
+end
+vim.lsp.config('sourcekit', {
+  capabilities = vim.tbl_deep_extend('force', capabilities, {
     workspace = {
       didChangeWatchedFiles = {
         dynamicRegistration = true,
       },
     },
-  },
-}
-require('lspconfig').mojo.setup {}
+  }),
+  on_attach = on_attach,
+})
+vim.lsp.config('mojo', {
+  capabilities = capabilities,
+  on_attach = on_attach,
+})

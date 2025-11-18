@@ -32,7 +32,7 @@ return {
   {
     -- "preservim/vim-markdown",
     'ixru/nvim-markdown',
-    enabled = true,
+    enabled = false,
     config = function()
       vim.cmd [[set conceallevel=2
       " let g:vim_markdown_conceal = 2
@@ -48,6 +48,45 @@ return {
     end,
     ft = 'markdown',
     -- event="BufEnter *.md"
+  },
+  -- {
+  --   'Thiago4532/mdmath.nvim',
+  --   dependencies = {
+  --     'nvim-treesitter/nvim-treesitter',
+  --   },
+  --   build = ':MdMath build', -- Builds Node.js server; run if fails
+  --   ft = 'markdown', -- Lazy-load on Markdown files
+  --   opts = {
+  --     -- Customize here for display equations
+  --     height_coeff = 0.1,
+  --     filetypes = { 'markdown' },
+  --     foreground = 'Normal', -- Or hex like "#ff0000"
+  --     anticonceal = true, -- Hide LaTeX under cursor
+  --     hide_on_insert = true, -- Hide in insert mode
+  --     dynamic = true, -- Enable scaling for display math (key for your request)
+  --     dynamic_scale = 1.0, -- Bump up for larger display eqs (default 1.0)
+  --     update_interval = 400, -- ms between renders (default)
+  --     internal_scale = 1.0, -- Pixel quality (higher = less blur, but aliased)
+  --   },
+  -- },
+  {
+    'folke/snacks.nvim',
+    priority = 1000, -- Load early
+    lazy = false,
+    opts = {
+      image = { enabled = true }, -- Enable inline rendering
+      -- Optional: Custom LaTeX preamble for equations
+      math = {
+        enabled = true,
+        latex = {
+          font_size = 'normalsize', -- see https://www.sascha-frank.com/latex-font-size.html
+          -- for latex documents, the doc packages are included automatically,
+          -- but you can add more packages here. Useful for markdown documents.
+          header = [[\newcommand{\R}{\mathbb{R}}]],
+          packages = { 'amsmath', 'amssymb', 'amsfonts', 'amscd', 'mathtools' },
+        },
+      },
+    },
   },
   {
     'epwalsh/obsidian.nvim',

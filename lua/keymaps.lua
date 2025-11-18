@@ -256,9 +256,7 @@ vim.keymap.set('n', '<leader>gw', load_wikilinks_to_quickfix, { desc = '[L]oad [
 
 -- Some primagen shortcuts
 vim.keymap.set({ 'n', 'x', 'v' }, '<Cmd-f>', '<cmd>silent !tmux neww tmux-sessionizer<CR>', { desc = 'Go to another tmux place.' })
-vim.keymap.set('x', '<leader>p', [["_dP]])
-vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
-vim.keymap.set('n', '<leader>Y', [["+Y]])
+vim.keymap.set('x', '<leader>np', [["_dp]])
 vim.keymap.set({ 'n', 'v' }, '<leader>nd', [["_d]])
 vim.keymap.set({ 'n', 'v' }, '<leader>nD', [["_D]])
 vim.keymap.set({ 'n', 'v' }, '<leader>nx', [["_x]])

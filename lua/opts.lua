@@ -27,7 +27,7 @@ vim.cmd([[
 --           \]
 --           ]]
 
-
+vim.g.python3_host_prog = vim.fn.expand("~/.venvs/nvim_host_venv/bin/python")
 
 -- Set highlight on search
 vim.o.hlsearch = true
