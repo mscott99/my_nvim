@@ -18,7 +18,7 @@ local strict_grab = require("snippets.utils").strict_grab
 local hats = {
   {
     trig = "bar",
-    tex = "bar",
+    tex = "overline",
   },
   {
     trig = "vec",

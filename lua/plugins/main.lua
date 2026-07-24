@@ -147,12 +147,13 @@ return {
   },
   {
     'folke/flash.nvim',
+    enabled = false,
     event = 'VeryLazy',
     ---@type Flash.Config
     opts = {
-      jump={
-        autojump=true,
-      }
+      jump = {
+        autojump = true,
+      },
     },
     keys = {
       {
@@ -198,8 +199,8 @@ return {
     },
   },
   {
-    'ggandor/leap.nvim',
-    enabled=false,
+    url = "https://codeberg.org/andyg/leap.nvim",
+    enabled = true,
     lazy = false,
     config = function(_, _)
       vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap-forward)')
@@ -381,7 +382,7 @@ return {
     'catppuccin/nvim',
     name = 'catppuccin',
     config = function()
-      require('catppuccin').setup { flavour = 'mocha' }
+      require('catppuccin').setup {kitty = true, flavour = 'frappe' }
       vim.cmd.colorscheme 'catppuccin'
     end,
     priority = 1000,
@@ -489,7 +490,9 @@ return {
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',
+    enabled=false,
+    opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {

@@ -1,3 +1,4 @@
+-- Conceals have significant overhead --
 -- Define a function to setup custom conceals
 local function setup_custom_conceals()
   -- Use vim.api.nvim_exec to run Vimscript for syntax matching
@@ -100,7 +101,7 @@ local function setup_custom_conceals()
     syntax match texMathCmd '\\boldsymbol{\\chi}' conceal cchar=𝝃
     syntax match texMathCmd '\\boldsymbol{\\psi}' conceal cchar=𝝍
     syntax match texMathCmd '\\boldsymbol{\\omega}' conceal cchar=𝝎
-
+    syntax match texMathCmd '\\lin' conceal cchar=ℓ
     syntax match texMathCmd '\\measfield' conceal cchar=𝕂
     syntax match texMathCmd '\\field' conceal cchar=ℝ 
 
@@ -122,29 +123,29 @@ local function setup_custom_conceals()
   --
 end
 
-vim.cmd [[
-    let g:mkdp_preview_options = {
-        \ 'mkit': {},
-        \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\allone": "\\mathbb{1}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\Span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}", "\\indep": "\perp\!\!\!\!\perp", "\\rank": "\\mathbb{rank}", "\\diag": "\\mathbb{diag}", "\\Diag":"\\mathbb{Diag}", "\\interior":"\\mathbb{int}", "\\measfield": "\\mathbb{C}", "\\field": "\\mathbb{R}"},},
-        \ 'uml': {},
-        \ 'maid': {},
-        \ 'disable_sync_scroll': 0,
-        \ 'sync_scroll_type': 'middle',
-        \ 'hide_yaml_meta': 1,
-        \ 'sequence_diagrams': {},
-        \ 'flowchart_diagrams': {},
-        \ 'content_editable': v:false,
-        \ 'disable_filename': 0,
-        \ 'toc': {}
-        \ }
-    ]]
+-- vim.cmd [[
+--     let g:mkdp_preview_options = {
+--         \ 'mkit': {},
+--         \ 'katex': {'macros': {"\\proj": "\\Pi", "\\bR": "\\mathbb{R}", "\\ker": "\\mathrm{ker}", "\\allone": "\\mathbb{1}", "\\indicator":"\\mathbb{1}", "\\minimize": "\\mathbb{minimize}", "\\maximize": "\\mathbb{maximize}", "\\argmin": "\\mathbb{argmin}", "\\argmax": "\\mathbb{argmax}", "\\range": "\\mathbb{range}", "\\prob": "\\mathbb{P}", "\\hull": "\\mathbb{H}", "\\Span": "\\mathbb{span}", "\\aff": "\\mathbb{aff}", "\\indep": "\perp\!\!\!\!\perp", "\\rank": "\\mathbb{rank}", "\\diag": "\\mathbb{diag}", "\\Diag":"\\mathbb{Diag}", "\\interior":"\\mathbb{int}", "\\measfield": "\\mathbb{C}", "\\field": "\\mathbb{R}"},},
+--         \ 'uml': {},
+--         \ 'maid': {},
+--         \ 'disable_sync_scroll': 0,
+--         \ 'sync_scroll_type': 'middle',
+--         \ 'hide_yaml_meta': 1,
+--         \ 'sequence_diagrams': {},
+--         \ 'flowchart_diagrams': {},
+--         \ 'content_editable': v:false,
+--         \ 'disable_filename': 0,
+--         \ 'toc': {}
+--         \ }
+--     ]]
 
 -- Create an autocommand group for markdown conceal settings
-local markdown_conceal_group = vim.api.nvim_create_augroup('MarkdownConceal', { clear = true })
+-- local markdown_conceal_group = vim.api.nvim_create_augroup('MarkdownConceal', { clear = true })
 
 -- Register autocommands to run the setup function on specific events and filetypes
-vim.api.nvim_create_autocmd({ 'VimEnter', 'BufWinEnter' }, {
-  group = markdown_conceal_group,
-  pattern = '*.md',
-  callback = setup_custom_conceals,
-})
+-- vim.api.nvim_create_autocmd({ 'VimEnter', 'BufWinEnter' }, {
+--   group = markdown_conceal_group,
+--   pattern = '*.md',
+--   callback = setup_custom_conceals,
+-- })

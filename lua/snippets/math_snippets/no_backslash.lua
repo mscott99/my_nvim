@@ -11,10 +11,13 @@ local fmta = require('luasnip.extras.fmt').fmta
 local rep = require('luasnip.extras').rep
 
 local no_backslash = {
+  'sri',
+  'qri',
+  'icr',
+  'lin',
   'epi',
   'trunc',
   'log',
-  'int',
   'psi',
   'phi',
   'eta',
@@ -52,8 +55,6 @@ local no_backslash = {
   'perp',
   'limsup',
   'liminf',
-  'Cap',
-  'Cup',
   'circ',
   'ell',
   'lim',
@@ -77,6 +78,7 @@ local no_backslash_add_space = {
   'land',
   'lor',
   'implies',
+  'rtimes',
   'times',
   'quad',
   'qquad',

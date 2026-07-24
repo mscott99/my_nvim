@@ -28,7 +28,7 @@ return function(is_math, not_math)
       { t(" &"), i(1, "="), t(" "), d(2, get_prev_align_line ), i(3), t("\\\\")}
     ),
     s(
-      { trig = "int", wordTrig = true, name = "integral", condition = is_math },
+      { trig = "inte", wordTrig = true, name = "integral", condition = is_math },
       fmta([[\int_{<>}^{<>} <> d<>]], { i(1, "x=0"), i(2, "\\infty"), d(3, get_visual), i(4, "x") })
     ),
     s(

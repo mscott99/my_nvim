@@ -44,3 +44,5 @@ require "llm.llm_copy"
 require "setup.git"
 
 require "setup.molten"
+
+require "setup.vault_search"

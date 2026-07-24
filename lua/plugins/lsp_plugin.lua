@@ -62,6 +62,7 @@ return {
         -- markdown = { 'prettier' },
         typescript = { 'prettier' },
         python = { 'autopep8' },
+        typst = { 'tinymist' },
       },
       formatters = {
         latexindent = {

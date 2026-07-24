@@ -32,7 +32,7 @@ return {
   {
     -- "preservim/vim-markdown",
     'ixru/nvim-markdown',
-    enabled = false,
+    enabled = true,
     config = function()
       vim.cmd [[set conceallevel=2
       " let g:vim_markdown_conceal = 2
@@ -71,6 +71,7 @@ return {
   -- },
   {
     'folke/snacks.nvim',
+    enabled = false,
     priority = 1000, -- Load early
     lazy = false,
     opts = {
@@ -86,6 +87,33 @@ return {
           packages = { 'amsmath', 'amssymb', 'amsfonts', 'amscd', 'mathtools' },
         },
       },
+    },
+  },
+  {
+    'obsidian-nvim/obsidian.nvim',
+    enabled=false,
+    version = '*', -- recommended, use latest release instead of latest commit
+    ft = 'markdown',
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+    --   -- refer to `:h file-pattern` for more examples
+    --   "BufReadPre path/to/my-vault/*.md",
+    --   "BufNewFile path/to/my-vault/*.md",
+    -- },
+    ---@module 'obsidian'
+    ---@type obsidian.config
+    opts = {
+      legacy_commands = false, -- this will be removed in the next major release
+      workspaces = {
+        {
+          name = 'personal',
+          path = '~/Obsidian/myVault/', -- no need to call 'vim.fn.expand' here
+        },
+      },
+
+      -- see below for full list of options 👇
     },
   },
   {

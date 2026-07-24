@@ -11,6 +11,7 @@ local fmta = require('luasnip.extras.fmt').fmta
 local rep = require('luasnip.extras').rep
 local get_visual = require('snippets.utils').get_visual
 local loose_grab = require('snippets.utils').loose_grab
+local get_visual_or_loose_grab = require('snippets.utils').get_visual_or_loose_grab
 
 return function(is_math, not_math)
   return {
@@ -18,12 +19,27 @@ return function(is_math, not_math)
     s({ condition = not_math, trig = 'dm', name = 'Math', snippetType = 'autosnippet' }, fmta('$$<>$$\n', { i(1) })),
     -- s({
     --   condition = is_math,
+    --   priority = 1002,
     --   trig = '//',
     --   wordtrig = true,
     --   name = 'fraction',
     --   dscr = 'fraction (general)',
     --   snippetType = 'autosnippet',
     -- }, fmta([[\frac{<>}{<>}]], { d(1, get_visual), i(2, 'b') })),
+    s(
+      {
+        trig = '  /',
+        priority = 1001,
+        name = 'fraction escape',
+        dscr = 'Avoid trigering frac when two spaces',
+        condition = is_math,
+        snippetType = 'autosnippet',
+        regTrig = false, -- Change to false since we're now looking for a simple trigger
+        wordTrig = false,
+      }, {
+      t("/")
+      }
+    ),
     s(
       {
         trig = '/',
@@ -40,10 +56,11 @@ return function(is_math, not_math)
     \frac{<>}{<>}
     ]],
         {
-          f(function(args, snip)
-              return loose_grab()
-          end, {}),
-          i(1), -- The denominator will be inserted here
+          d(1, get_visual_or_loose_grab),
+          -- f(function(args, snip)
+          --     return loose_grab()
+          -- end, {}),
+          i(2), -- The denominator will be inserted here
         }
       )
       -- {

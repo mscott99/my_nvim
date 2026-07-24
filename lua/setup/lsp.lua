@@ -65,6 +65,20 @@ local servers = {
       language = 'en-US',
       dictionary = {
         ['en-US'] = {
+          'dehomogenized',
+          'Hanh-Banach',
+          'maximizations',
+          'pointedness',
+          'LEXICOGRAPHICALCHARACTERIZATIONFACES',
+          'dehomogenizes',
+          'Riesz',
+          'lineality',
+          'codimension',
+          'orientable',
+          'parameterizations',
+          'codomain',
+          'dehomogenization',
+          'cross-lineality',
           'infimum',
           'supremum',
           'WLOG',
@@ -118,6 +132,9 @@ local servers = {
           'wikilink',
           'wikilinks',
           'chatgpt',
+          'functional',
+          'functionals',
+          'behaviour',
         },
       },
       additionalRules = {
@@ -161,19 +178,19 @@ for server_name, server_settings in pairs(servers) do
     filetypes = (server_settings or {}).filetypes,
   }
   -- Custom setup for ltex to suppress status messages
-  if server_name == "ltex" then
+  if server_name == 'ltex' then
     server_config.handlers = {
-      ["$/progress"] = function(_, result, ctx)
+      ['$/progress'] = function(_, result, ctx)
         -- Suppress progress messages containing "Checking document"
-        if result.value.message and result.value.message:match("Checking document") then
+        if result.value.message and result.value.message:match 'Checking document' then
           return -- Ignore the message
         end
         -- Optionally, pass other progress messages to default handler
         -- vim.notify(result.value.message, vim.log.levels.INFO)
       end,
-      ["window/showMessage"] = function(_, result, _)
+      ['window/showMessage'] = function(_, result, _)
         -- Suppress showMessage notifications containing "Checking document"
-        if result.message:match("Checking document") then
+        if result.message:match 'Checking document' then
           return -- Ignore the message
         end
         -- vim.notify(result.message, vim.log.levels.INFO)

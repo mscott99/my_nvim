@@ -102,6 +102,13 @@ vim.keymap.set('n', '<leader>gdt', function()
   vim.api.nvim_set_current_win(windows[1])
 end, { desc = '[D]iff [T]his' })
 
+-- <leader>w acts exactly like <C-w> (window prefix)
+vim.keymap.set("n", "<leader>w", function()
+  return "<C-w>"
+end, { expr = true, noremap = true, silent = true })
+
+-- Optional but highly recommended: Redirect old <C-w> to <leader>w (no loop!)
+-- vim.keymap.set("n", "<C-w>", "<leader>w", { remap = true })
 vim.keymap.set('n', '<leader>ghd', '<cmd>:Gdiffsplit :1 | Gvdiffsplit!<cr>', { desc = 'Diff merge conflict' })
 vim.keymap.set('n', '<leader>ghgb', '<cmd>diffget //1<cr>', { desc = 'Diff get base' })
 vim.keymap.set('n', '<leader>ghgt', '<cmd>diffget //2<cr>', { desc = 'Diff get target branch' })

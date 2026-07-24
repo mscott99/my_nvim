@@ -3,6 +3,7 @@ local ts = require 'vim.treesitter'
 local ls = require 'luasnip'
 local sn = ls.snippet_node
 local i = ls.insert_node
+local t = ls.text_node
 
 -- Get the index of the preceding latex block.
 local match_latex = function(line, pos, break_pattern)
@@ -100,18 +101,29 @@ M.grab_latex_at_cursor = function(break_pattern)
 end
 
 M.loose_grab = function()
-  return M.grab_latex_at_cursor "[%s${%[%($]$"
+  return M.grab_latex_at_cursor '[%s${%[%($]$'
 end
 
 M.strict_grab = function()
-  return M.grab_latex_at_cursor "[%s${}%[%]%(%)%]_%-%+%|:;]$"
+  return M.grab_latex_at_cursor '[%s${}%[%]%(%)%]_%-%+%|:;]$'
 end
+
 
 function M.get_visual(_, parent) -- use with dynamic node d(1, get_visual)
   if #parent.snippet.env.LS_SELECT_RAW > 0 then
     return sn(nil, i(1, parent.snippet.env.LS_SELECT_RAW))
   else -- If LS_SELECT_RAW is empty, return a blank insert node
     return sn(nil, i(1))
+  end
+end
+
+M.get_visual_or_loose_grab = function(_, parent)
+  vim.print(#parent.snippet)
+  -- print(parent)
+  if #parent.snippet.env.LS_SELECT_RAW > 0 then
+    return sn(nil, t(parent.snippet.env.LS_SELECT_RAW))
+  else -- If LS_SELECT_RAW is empty, return a blank insert node
+    return sn(nil, t(M.loose_grab()))
   end
 end
 
@@ -250,7 +262,7 @@ M.greek_letters = {
   'phi',
   'Phi',
   'pi',
-  'Pi',
+  -- 'Pi',
   'rho',
   'Rho',
   'sigma',
@@ -272,7 +284,7 @@ M.short_greek = {
   'nu',
   'Nu',
   'pi',
-  'Pi',
+  -- 'Pi',
   'mu',
   'Mu',
   'eta',
@@ -281,7 +293,7 @@ M.short_greek = {
 
 local others = {
   'varepsilon',
-  'varphi'
+  'varphi',
 }
 
 M.redundant_starting_greeks = M.concat { M.greek_letters, others, M.short_greek }
